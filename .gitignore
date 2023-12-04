@@ -263,3 +263,20 @@ __pycache__/
 *.pyc
 *.cso
 /hw3d/imgui.ini
+
+# Compiled Object files
+*.suo
+*.obj
+*.o
+*.a
+*.out
+*.exe
+
+# DirectX intermediate files
+*.pdb
+*.ilk
+*.exp
+
+# DirectX debug files
+Debug/
+Release/
