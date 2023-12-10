@@ -23,6 +23,10 @@ void Game::Init(HWND hwnd)
 	CreateRenderTargetView(); 
 	SetViewport(); 
 
+	CreateGeometry(); 
+	CreateVS(); 
+	CreateInputLayout(); 
+	CreatePS(); 
 }
 
 void Game::Update()
@@ -33,7 +37,31 @@ void Game::Render()
 {
 	RenderBegin(); 
 
-	// TODO
+	// IA - VS - RS - PS - OM
+	{
+		uint32 stride = sizeof(Vertex); 
+		uint32 offset = 0; 
+
+		// IA
+		// 코딩하는게 아니라 세팅하는 거
+		_deviceContext->IASetVertexBuffers(0, 1, _vertexBuffer.GetAddressOf(), &stride, &offset); 
+		_deviceContext->IASetInputLayout(_inputLayout.Get()); // 어떻게 생겨먹은 애인지 묘사해줘야 해
+		_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // 삼각형으로 인지를 해달라 부탁 
+
+		// VS
+		// 코딩 가능
+		_deviceContext->VSSetShader(_vertexShader.Get(), nullptr, 0); 
+
+		// RS
+		// 일단 스킵
+
+		// PS
+		_deviceContext->PSSetShader(_pixelShader.Get(), nullptr, 0); 
+
+		// OM
+
+		_deviceContext->Draw(_vertices.size(), 0); 
+	}
 
 	RenderEnd(); 
 }
@@ -123,4 +151,89 @@ void Game::SetViewport()
 	_viewport.Height = static_cast<float>(_height); 
 	_viewport.MinDepth = 0.f; 
 	_viewport.MaxDepth = 1.f; 
+}
+
+void Game::CreateGeometry()
+{
+	// VertexData - CPU 메모리에 있는 거 
+	{
+		_vertices.resize(3);
+
+		_vertices[0].position = Vec3(-0.5f, -0.5f, 0.f); 
+		_vertices[0].color = Color(1.f, 0.f, 0.f, 1.f); 
+
+		_vertices[1].position = Vec3(0.f, 0.5f, 0.f);
+		_vertices[1].color = Color(0.f, 1.f, 0.f, 1.f);
+
+		_vertices[2].position = Vec3(0.5f, -0.5f, 0.f);
+		_vertices[2].color = Color(0.f, 0.f, 1.f, 1.f);
+	}
+
+	// VertexBuffer
+	{
+		D3D11_BUFFER_DESC desc; 
+		ZeroMemory(&desc, sizeof(desc)); 
+		desc.Usage = D3D11_USAGE_IMMUTABLE; 
+		desc.BindFlags = D3D11_BIND_VERTEX_BUFFER; // Input assembler에서 건내 주는 vertex buffer를 만들고 있는 것이기 때문
+		desc.ByteWidth = (uint32)(sizeof(Vertex) * _vertices.size()); 
+
+		D3D11_SUBRESOURCE_DATA data; 
+		ZeroMemory(&data, sizeof(data)); 
+		data.pSysMem = _vertices.data(); // &_vertices[0];와 같은 의미
+
+		_device->CreateBuffer(&desc, &data, _vertexBuffer.GetAddressOf()); 
+		// 설정한 값 desc, data에 의해가지고 GPU 쪽에 버퍼가 만들어 지면서 CPU의 메모리에서 들고 있었던 vertices에 관한 정보가 
+		// 복사가 되어 넘어 간다. 그 다음 부터는 GPU의 메모리만 Read Only로 사용하겠구나 예측이 가능하다.  
+	}
+
+}
+
+void Game::CreateInputLayout()
+{
+	D3D11_INPUT_ELEMENT_DESC layout[] =
+	{
+		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0}, // 12바이트 부터 컬러가 시작 offset
+	};
+
+	const int32 count = sizeof(layout) / sizeof(D3D11_INPUT_ELEMENT_DESC);
+	_device->CreateInputLayout(layout, count, _vsBlob->GetBufferPointer(), _vsBlob->GetBufferSize(), _inputLayout.GetAddressOf());  //세번째 인자로 Shader에 대한 정보를 받아주고 있어. 그래서 Shader를 먼저 만들어서 로드를 해야겠구나 알 수 있는 거. 
+}
+
+// 셰이더를 로드해서 Blob이라는 걸 만들어준 다음에 그 Blob에 있는 정보들을 이용해서 Vertex shader를 만들어주면 최종적으로 완료가 되면 _vertexShader가 채워진다. 
+void Game::CreateVS()
+{
+	LoadShaderFromFile(L"Default.hlsl", "VS", "vs_5_0", _vsBlob); // _vsBlob이 채워지게 된다. 
+	
+	HRESULT hr = _device->CreateVertexShader(_vsBlob->GetBufferPointer(),
+		_vsBlob->GetBufferSize(), nullptr, _vertexShader.GetAddressOf()); 
+	CHECK(hr); 
+}
+
+void Game::CreatePS()
+{
+	LoadShaderFromFile(L"Default.hlsl", "PS", "ps_5_0", _psBlob); // _psBlob이 채워지게 된다. 
+
+	HRESULT hr = _device->CreatePixelShader(_psBlob->GetBufferPointer(),
+		_psBlob->GetBufferSize(), nullptr, _pixelShader.GetAddressOf());
+	CHECK(hr);
+}
+
+void Game::LoadShaderFromFile(const wstring& path, const string& name, const string& version, ComPtr<ID3DBlob>& blob)
+{
+	const uint32 compileFlag = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION; 
+
+	// pch.h에서 d3dcompliler.h를 include했기에 지원이 되는 함수 
+	HRESULT hr = ::D3DCompileFromFile(
+		path.c_str(),
+		nullptr,
+		D3D_COMPILE_STANDARD_FILE_INCLUDE,
+		name.c_str(),
+		version.c_str(),
+		compileFlag,
+		0,
+		blob.GetAddressOf(),
+		nullptr); 
+
+	CHECK(hr); 	
 }

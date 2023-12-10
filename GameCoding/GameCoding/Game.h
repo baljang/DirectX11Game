@@ -19,6 +19,15 @@ private:
 	void CreateRenderTargetView(); 
 	void SetViewport(); 
 
+private: 
+	void CreateGeometry(); 
+	void CreateInputLayout();
+
+	void CreateVS(); 
+	void CreatePS(); 
+
+	void LoadShaderFromFile(const wstring& path, const string& name, const string& version, ComPtr<ID3DBlob>& blob); 
+
 private:
 	HWND _hwnd;
 	uint32 _width = 0;
@@ -35,6 +44,21 @@ private:
 
 	// Misc
 	D3D11_VIEWPORT _viewport = { 0 }; // 화면의 크기를 묘사
-	float _clearColor[4] = { 0.5f, 0.5f, 0.5f, 0.5f };
+	float _clearColor[4] = { 0.f, 0.f, 0.f, 0.f };
 	
+private: 
+	// Geometry
+	vector<Vertex> _vertices; 
+	ComPtr<ID3D11Buffer> _vertexBuffer = nullptr; 
+	ComPtr<ID3D11InputLayout> _inputLayout = nullptr; 
+
+	// VS
+	ComPtr<ID3D11VertexShader> _vertexShader = nullptr; 
+	ComPtr<ID3DBlob> _vsBlob = nullptr; 
+
+	// PS
+	ComPtr<ID3D11PixelShader> _pixelShader = nullptr; 
+	ComPtr<ID3DBlob> _psBlob = nullptr; 
+
+	// [CPU <-> RAM] [GPU <-> VRAM]
 };
