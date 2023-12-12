@@ -26,6 +26,8 @@ private:
 	void CreateVS(); 
 	void CreatePS(); 
 
+	void CreateSRV(); 
+
 	void LoadShaderFromFile(const wstring& path, const string& name, const string& version, ComPtr<ID3DBlob>& blob); 
 
 private:
@@ -50,7 +52,9 @@ private:
 	// Geometry
 	vector<Vertex> _vertices; 
 	ComPtr<ID3D11Buffer> _vertexBuffer = nullptr; 
-	ComPtr<ID3D11InputLayout> _inputLayout = nullptr; 
+	vector<uint32> _indices; // uint16 중 선택사항인데 일단은 4바이트로 가본다.인덱스 목록 CPU에 들고 있음. 
+	ComPtr<ID3D11Buffer> _indexBuffer = nullptr; 
+	ComPtr<ID3D11InputLayout> _inputLayout = nullptr;
 
 	// VS
 	ComPtr<ID3D11VertexShader> _vertexShader = nullptr; 
@@ -59,6 +63,10 @@ private:
 	// PS
 	ComPtr<ID3D11PixelShader> _pixelShader = nullptr; 
 	ComPtr<ID3DBlob> _psBlob = nullptr; 
+
+	// SRV
+	ComPtr<ID3D11ShaderResourceView> _shaderResourceView = nullptr; 
+	ComPtr<ID3D11ShaderResourceView> _shaderResourceView2 = nullptr; 
 
 	// [CPU <-> RAM] [GPU <-> VRAM]
 };
