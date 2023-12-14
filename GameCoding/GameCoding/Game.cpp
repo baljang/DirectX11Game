@@ -29,10 +29,22 @@ void Game::Init(HWND hwnd)
 	CreatePS(); 
 
 	CreateSRV(); 
+	CreateContantBuffer(); 
+
+
 }
 
 void Game::Update()
 {
+	_transformData.offset.x += 0.003f; 
+	_transformData.offset.y += 0.003f; 
+
+	D3D11_MAPPED_SUBRESOURCE subResource; 
+	ZeroMemory(&subResource, sizeof(subResource));
+
+	_deviceContext->Map(_constantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &subResource); 
+	::memcpy(subResource.pData, &_transformData, sizeof(_transformData)); 
+	_deviceContext->Unmap(_constantBuffer.Get(), 0); 
 }
 
 void Game::Render()
@@ -54,6 +66,7 @@ void Game::Render()
 		// VS
 		// 코딩 가능
 		_deviceContext->VSSetShader(_vertexShader.Get(), nullptr, 0); 
+		_deviceContext->VSSetConstantBuffers(0, 1, _constantBuffer.GetAddressOf()); 
 
 		// RS
 		// 일단 스킵
@@ -271,6 +284,19 @@ void Game::CreateSRV()
 
 	hr = ::CreateShaderResourceView(_device.Get(), img.GetImages(), img.GetImageCount(), md, _shaderResourceView2.GetAddressOf());
 	CHECK(hr);
+}
+
+void Game::CreateContantBuffer()
+{
+	D3D11_BUFFER_DESC desc; 
+	ZeroMemory(&desc, sizeof(desc));
+	desc.Usage = D3D11_USAGE_DYNAMIC; // CPU_Write + GPU_Read
+	desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER; 
+	desc.ByteWidth = sizeof(TransformData); 
+	desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE; // CPU도 접근할 수 있따. 
+
+	HRESULT hr = _device->CreateBuffer(&desc, nullptr, _constantBuffer.GetAddressOf());
+	CHECK(hr); 
 }
 
 void Game::LoadShaderFromFile(const wstring& path, const string& name, const string& version, ComPtr<ID3DBlob>& blob)
