@@ -10,7 +10,7 @@ struct Vertex
 
 struct TransformData
 {
-	Vec3 offset; 
-	float dummy;  
-	// 컨스턴트 버퍼를 만들 때는 16바이트 정렬을 해야하기 때문에 
+	Matrix matWorld = Matrix::Identity;;
+	Matrix matView = Matrix::Identity;;
+	Matrix matProjection = Matrix::Identity; // 항등행렬
 };

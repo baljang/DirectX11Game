@@ -15,8 +15,9 @@ struct VS_OUTPUT
 
 cbuffer TransformData : register(b0) // 상수 버서 TransfromData를 받아 줄 건데, 버퍼의 약자인 b0를 받아 주도록 할거야. 
 { 
-    float4 offset; 
-    // 이걸 CPU가 세팅을 해서 TranformData를 넘겨주게 된다.
+    row_major matrix matWorld;
+    row_major matrix matView;
+    row_major matrix matProjection;
 }
 
 
@@ -24,15 +25,16 @@ cbuffer TransformData : register(b0) // 상수 버서 TransfromData를 받아 �
 // 위치와 관련된 변화
 VS_OUTPUT VS(VS_INPUT input)
 { 
-    // 행렬을 이용해서 막 계산 해야 하지만 지금은 일단 그대로 토스해보자.
     VS_OUTPUT output; 
-    output.position = input.position + offset; 
-    output.uv = input.uv; 
-    // 여기까지 VS
-    // Rasterizer 단계로 넘어가는 건 보간하는 작업. 삼각형 안에 있는 애들만 걸러주는 거라고 보면 된다. 
-    // 점점 각각의 색상이 다르다면 중간의 색깔 어떻게 보간할지 성정할 수 있어. 기본적으론 섞어서 보간. 
-    // Vertex를 받아서 Raterizer에서 처리해서 Pixel shader로 넘기게 된다. 
-    // Vertex Shader가 실행이 되면 알아서 RS가 실행이 되고 PS영역으로 넘어가게 되는데      
+    
+    // WVP
+    float4 position = mul(input.position, matWorld); // W
+    position = mul(position, matView); // V
+    position = mul(position, matProjection); // P 
+    
+//  output.position = input.position + offset; 
+    output.position = position; 
+    output.uv = input.uv;  
     
     return output; 
 }

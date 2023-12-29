@@ -38,8 +38,18 @@ void Game::Init(HWND hwnd)
 
 void Game::Update()
 {
-	//_transformData.offset.x += 0.003f; 
-	//_transformData.offset.y += 0.003f; 
+	// Scale Rotation Translation
+
+	_localPosition.x += 0.001f; 
+
+	Matrix matScale = Matrix::CreateScale(_localScale / 3); 
+	Matrix matRotation = Matrix::CreateRotationX(_localRotation.x); 
+	matRotation *= Matrix::CreateRotationY(_localRotation.y); 
+	matRotation *= Matrix::CreateRotationZ(_localRotation.z); // x,y,z 축 회전 행렬 곱하는 순서는 상관 없다. 
+	Matrix matTranslation = Matrix::CreateTranslation(_localPosition);
+
+	Matrix matWorld = matScale * matRotation * matTranslation; // SRT
+	_transformData.matWorld = matWorld; 
 
 	D3D11_MAPPED_SUBRESOURCE subResource; 
 	ZeroMemory(&subResource, sizeof(subResource));
@@ -185,7 +195,7 @@ void Game::CreateGeometry()
 		_vertices.resize(4);
 
 		_vertices[0].position = Vec3(-0.5f, -0.5f, 0.f); 
-		_vertices[0].uv = Vec2(0.f, 5.f); 
+		_vertices[0].uv = Vec2(0.f, 1.f); 
 		// _vertices[0].color = Color(1.f, 0.f, 0.f, 1.f); 
 
 		_vertices[1].position = Vec3(-0.5f, 0.5f, 0.f);
@@ -193,11 +203,11 @@ void Game::CreateGeometry()
 		// _vertices[1].color = Color(1.f, 0.f, 0.f, 1.f);
 
 		_vertices[2].position = Vec3(0.5f, -0.5f, 0.f);
-		_vertices[2].uv = Vec2(5.f, 5.f);
+		_vertices[2].uv = Vec2(1.f, 1.f);
 		// _vertices[2].color = Color(1.f, 0.f, 0.f, 1.f);
 
 		_vertices[3].position = Vec3(0.5f, 0.5f, 0.f);
-		_vertices[3].uv = Vec2(5.f, 0.f);
+		_vertices[3].uv = Vec2(1.f, 0.f);
 		// _vertices[3].color = Color(1.f, 0.f, 0.f, 1.f);
 	}
 
@@ -290,9 +300,9 @@ void Game::CreateSamplerState()
 	D3D11_SAMPLER_DESC desc; 
 	ZeroMemory(&desc, sizeof(desc));
 	// 여기다가 마음에 드는 옵션들을 세팅해 보면된다. 
-	desc.AddressU = D3D11_TEXTURE_ADDRESS_MIRROR;
-	desc.AddressV = D3D11_TEXTURE_ADDRESS_MIRROR;
-	desc.AddressW = D3D11_TEXTURE_ADDRESS_MIRROR;
+	desc.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
+	desc.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
+	desc.AddressW = D3D11_TEXTURE_ADDRESS_BORDER;
 	desc.BorderColor[0] = 1; 
 	desc.BorderColor[1] = 0; 
 	desc.BorderColor[2] = 0; 
