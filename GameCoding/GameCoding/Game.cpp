@@ -12,16 +12,9 @@ Game::~Game()
 void Game::Init(HWND hwnd)
 {
 	_hwnd = hwnd;
-	_width = GWinSizeX;
-	_height = GWinSizeY;
 
-	// TODO
-
-	//_device->AddRef(); 
-	//_device->Release(); 
-	CreateDeviceAndSwapChain(); 
-	CreateRenderTargetView(); 
-	SetViewport(); 
+	//_graphics = make_shared<Graphics>(hwnd); 
+	_graphics = new Graphics(hwnd); 
 
 	CreateGeometry(); 
 	CreateVS(); 
@@ -54,19 +47,21 @@ void Game::Update()
 	D3D11_MAPPED_SUBRESOURCE subResource; 
 	ZeroMemory(&subResource, sizeof(subResource));
 
-	_deviceContext->Map(_constantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &subResource); 
+	_graphics->GetDeviceContext()->Map(_constantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &subResource);
 	::memcpy(subResource.pData, &_transformData, sizeof(_transformData)); 
-	_deviceContext->Unmap(_constantBuffer.Get(), 0); 
+	_graphics->GetDeviceContext()->Unmap(_constantBuffer.Get(), 0);
 }
 
 void Game::Render()
 {
-	RenderBegin(); 
+	_graphics->RenderBegin();
 
 	// IA - VS - RS - PS - OM
 	{
 		uint32 stride = sizeof(Vertex); 
 		uint32 offset = 0; 
+
+		auto _deviceContext = _graphics->GetDeviceContext(); 
 
 		// IA
 		// 코딩하는게 아니라 세팅하는 거
@@ -96,94 +91,7 @@ void Game::Render()
 		_deviceContext->DrawIndexed(_indices.size(), 0, 0);
 	}
 
-	RenderEnd(); 
-}
-
-void Game::RenderBegin()
-{
-	_deviceContext->OMSetRenderTargets(1, _renderTargetView.GetAddressOf(), nullptr); 
-	_deviceContext->ClearRenderTargetView(_renderTargetView.Get(), _clearColor); 
-	_deviceContext->RSSetViewports(1, &_viewport); 
-}
-
-void Game::RenderEnd()
-{ 
-	// RenderBegin에서 후면 버퍼에 그려달라 요청한 거고
-	// 여기서는 전면 버퍼에 복사를 해달라, 그리고 화면에 출력을 해달라 
-	// [ ] <- [ ]
-	HRESULT hr = _swapChain->Present(1, 0); // 그린 거를 제출하겠다.
-	CHECK(hr); 
-}
-
-// 
-void Game::CreateDeviceAndSwapChain()
-{
-	DXGI_SWAP_CHAIN_DESC desc; // 안에 또 구조체가 있기 때문에 복잡하다. Device and SwapChain을 하고 있다에 집중하는게 좋다.
-	ZeroMemory(&desc, sizeof(desc)); // desc를 0으로 밀어 버린다. ::memset(&desc, 0, sizeof(desc))이랑 마찬가지. 0으로 민 다음 필요한 걸로 채워줘야 해
-	{
-		desc.BufferDesc.Width = _width; 
-		desc.BufferDesc.Height = _height; // 화면이 800x600이니 버퍼도 똑같이 800x600으로 만들어 주는 거
-		desc.BufferDesc.RefreshRate.Numerator = 60; // 화면 주사율
-		desc.BufferDesc.RefreshRate.Denominator = 1; // 이름으로 때려 맞춰 보는 연습도 재밌다. 
-		desc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM; // 8비트x4짜리로 만들어 주겠다
-		desc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
-		desc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED; // 지금 단계에선 신경 안써도 되는 옵션.
-		desc.SampleDesc.Count = 1; // 계단 현상 줄일 때 숫자 늘일 수 있어.
-		desc.SampleDesc.Quality = 0; 
-		desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT; // 최종 결과물을 그려주는 역할로 사용하겠다는 옵션
-		desc.BufferCount = 1; // 후면 버퍼 개수
-		desc.OutputWindow = _hwnd; // 윈도우 핸들
-		desc.Windowed = true; 
-		desc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD; 
-	}
-
-	//_device.Get();  // ComPtr내부에서 관리하는 ID3D11Device를 꺼내고 싶을 때, 즉 ID3D11Device* 얘를 꺼내고 싶을 때 
-	//_device.GetAddressOf(); //ID3D11Device*의 주소값 즉 ID3D11Device**를 얻고 싶을 때 
-
-	HRESULT hr = ::D3D11CreateDeviceAndSwapChain(
-		nullptr,
-		D3D_DRIVER_TYPE_HARDWARE,	// 그래픽 카드 사용하겠다는 내용, 그래픽 카드가 없으면 다른 거 선택하게끔 하는 옵션 있어.
-		nullptr,
-		0,
-		nullptr, // feature level 에 대한 배열을 만들어 건내줘야 한다. 몇 DX 버전 지원할것인지, 안채워도 지원 가능한 상위 버전 골라준다.
-		0, // 배열크기, nullptr로 했으니 0개
-		D3D11_SDK_VERSION, // 11버전에서 세부 버전이 몇번인지 매크로로 정의되어 있어.
-		&desc, // 스왑체인 디스크립션을 위에서 만들어서 넣어준다.
-		_swapChain.GetAddressOf(), // _device에다가 결국 결과물을 받아주는 거 
-		_device.GetAddressOf(),
-		nullptr,
-		_deviceContext.GetAddressOf()
-	);
-
-	//assert(SUCCEEDED(hr)); // 실패하면 크래시 나게 유도할 수 있다.
-	CHECK(hr);
-}
-
-void Game::CreateRenderTargetView()
-{
-	HRESULT hr; 
-
-	ComPtr<ID3D11Texture2D> backBuffer = nullptr; 
-	hr = _swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)backBuffer.GetAddressOf()); // 후면 버퍼를 Texture2D라는 티입으로 반환해 주는 거 
-	// Texture는 png같은 건데 앞으로 어떻게 분석할지 모르는 거. RenderTargetView 용도로 사용할 것이라는 걸 명시해 줘야 해. 
-	CHECK(hr); 
-
-	_device->CreateRenderTargetView(backBuffer.Get(), nullptr, _renderTargetView.GetAddressOf()); 
-	CHECK(hr);
-	// 흐름: SwapChain에서 후면 버퍼에 해당하는 리소스를 ComPtr<ID3D11Texture2D> backBuffer로 뱉어주고, 
-	// 그거를 CreateRenderTargetView를 통해서 backBuffer를 묘사하는 _renderTargetView라는 형태로 만들어 줬고, 
-	// GPU와 통신하면서 _renderTargetView를 건내주면 알아먹고, backBuffer에 그림을 그려주는 식으로 동작을 한다.
-	// 일종의 스페셜한 포인터
-}
-
-void Game::SetViewport()
-{
-	_viewport.TopLeftX = 0.f; 
-	_viewport.TopLeftY = 0.f; 
-	_viewport.Width = static_cast<float>(_width); 
-	_viewport.Height = static_cast<float>(_height); 
-	_viewport.MinDepth = 0.f; 
-	_viewport.MaxDepth = 1.f; 
+	_graphics->RenderEnd();
 }
 
 void Game::CreateGeometry()
@@ -223,7 +131,7 @@ void Game::CreateGeometry()
 		ZeroMemory(&data, sizeof(data)); 
 		data.pSysMem = _vertices.data(); // &_vertices[0];와 같은 의미
 
-		HRESULT hr = _device->CreateBuffer(&desc, &data, _vertexBuffer.GetAddressOf()); 
+		HRESULT hr = _graphics->GetDevice()->CreateBuffer(&desc, &data, _vertexBuffer.GetAddressOf()); 
 		// 설정한 값 desc, data에 의해가지고 GPU 쪽에 버퍼가 만들어 지면서 CPU의 메모리에서 들고 있었던 vertices에 관한 정보가 
 		// 복사가 되어 넘어 간다. 그 다음 부터는 GPU의 메모리만 Read Only로 사용하겠구나 예측이 가능하다.  
 		CHECK(hr); 
@@ -246,7 +154,7 @@ void Game::CreateGeometry()
 		ZeroMemory(&data, sizeof(data));
 		data.pSysMem = _indices.data(); // &_indices[0];와 같은 의미
 
-		HRESULT hr = _device->CreateBuffer(&desc, &data, _indexBuffer.GetAddressOf());
+		HRESULT hr = _graphics->GetDevice()->CreateBuffer(&desc, &data, _indexBuffer.GetAddressOf());
 		CHECK(hr); 
 	}
 
@@ -261,7 +169,7 @@ void Game::CreateInputLayout()
 	};
 
 	const int32 count = sizeof(layout) / sizeof(D3D11_INPUT_ELEMENT_DESC);
-	_device->CreateInputLayout(layout, count, _vsBlob->GetBufferPointer(), _vsBlob->GetBufferSize(), _inputLayout.GetAddressOf());  //세번째 인자로 Shader에 대한 정보를 받아주고 있어. 그래서 Shader를 먼저 만들어서 로드를 해야겠구나 알 수 있는 거. 
+	_graphics->GetDevice()->CreateInputLayout(layout, count, _vsBlob->GetBufferPointer(), _vsBlob->GetBufferSize(), _inputLayout.GetAddressOf());  //세번째 인자로 Shader에 대한 정보를 받아주고 있어. 그래서 Shader를 먼저 만들어서 로드를 해야겠구나 알 수 있는 거. 
 }
 
 // 셰이더를 로드해서 Blob이라는 걸 만들어준 다음에 그 Blob에 있는 정보들을 이용해서 Vertex shader를 만들어주면 최종적으로 완료가 되면 _vertexShader가 채워진다. 
@@ -269,7 +177,7 @@ void Game::CreateVS()
 {
 	LoadShaderFromFile(L"Default.hlsl", "VS", "vs_5_0", _vsBlob); // _vsBlob이 채워지게 된다. 
 	
-	HRESULT hr = _device->CreateVertexShader(_vsBlob->GetBufferPointer(),
+	HRESULT hr = _graphics->GetDevice()->CreateVertexShader(_vsBlob->GetBufferPointer(),
 		_vsBlob->GetBufferSize(), nullptr, _vertexShader.GetAddressOf()); 
 	CHECK(hr); 
 }
@@ -278,7 +186,7 @@ void Game::CreatePS()
 {
 	LoadShaderFromFile(L"Default.hlsl", "PS", "ps_5_0", _psBlob); // _psBlob이 채워지게 된다. 
 
-	HRESULT hr = _device->CreatePixelShader(_psBlob->GetBufferPointer(),
+	HRESULT hr = _graphics->GetDevice()->CreatePixelShader(_psBlob->GetBufferPointer(),
 		_psBlob->GetBufferSize(), nullptr, _pixelShader.GetAddressOf());
 	CHECK(hr);
 }
@@ -291,7 +199,7 @@ void Game::CreateRasterizerState()
 	desc.CullMode = D3D11_CULL_BACK; 
 	desc.FrontCounterClockwise = false; // 이것들은 실습을 하면서 얘기를 해볼거야. 
 
-	HRESULT hr = _device->CreateRasterizerState(&desc, _rasterizerState.GetAddressOf());
+	HRESULT hr = _graphics->GetDevice()->CreateRasterizerState(&desc, _rasterizerState.GetAddressOf());
 	CHECK(hr); 
 }
 
@@ -315,7 +223,7 @@ void Game::CreateSamplerState()
 	desc.MinLOD = FLT_MIN; 
 	desc.MipLODBias = 0.0f; 
 
-	_device->CreateSamplerState(&desc, _samplerState.GetAddressOf()); 
+	_graphics->GetDevice()->CreateSamplerState(&desc, _samplerState.GetAddressOf());
 }
 
 void Game::CreateBlendState()
@@ -334,7 +242,7 @@ void Game::CreateBlendState()
 	desc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD; 
 	desc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL; 
 
-	HRESULT hr = _device->CreateBlendState(&desc, _blendState.GetAddressOf()); 
+	HRESULT hr = _graphics->GetDevice()->CreateBlendState(&desc, _blendState.GetAddressOf());
 	CHECK(hr); 
 }
 
@@ -345,13 +253,13 @@ void Game::CreateSRV()
 	HRESULT hr = ::LoadFromWICFile(L"chiikawa.png", WIC_FLAGS_NONE, &md, img); 
 	CHECK(hr); 
 
-	hr = ::CreateShaderResourceView(_device.Get(), img.GetImages(), img.GetImageCount(), md, _shaderResourceView.GetAddressOf()); 
+	hr = ::CreateShaderResourceView(_graphics->GetDevice().Get(), img.GetImages(), img.GetImageCount(), md, _shaderResourceView.GetAddressOf());
 	CHECK(hr); 
 
 	hr = ::LoadFromWICFile(L"hachiware.png", WIC_FLAGS_NONE, &md, img);
 	CHECK(hr);
 
-	hr = ::CreateShaderResourceView(_device.Get(), img.GetImages(), img.GetImageCount(), md, _shaderResourceView2.GetAddressOf());
+	hr = ::CreateShaderResourceView(_graphics->GetDevice().Get(), img.GetImages(), img.GetImageCount(), md, _shaderResourceView2.GetAddressOf());
 	CHECK(hr);
 }
 
@@ -364,7 +272,7 @@ void Game::CreateContantBuffer()
 	desc.ByteWidth = sizeof(TransformData); 
 	desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE; // CPU도 접근할 수 있따. 
 
-	HRESULT hr = _device->CreateBuffer(&desc, nullptr, _constantBuffer.GetAddressOf());
+	HRESULT hr = _graphics->GetDevice()->CreateBuffer(&desc, nullptr, _constantBuffer.GetAddressOf());
 	CHECK(hr); 
 }
 
