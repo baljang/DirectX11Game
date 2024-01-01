@@ -38,10 +38,13 @@ private:
 private: 
 	// Geometry
 	vector<Vertex> _vertices; 
-	ComPtr<ID3D11Buffer> _vertexBuffer = nullptr; 
+	VertexBuffer* _vertexBuffer; 
+	//ComPtr<ID3D11Buffer> _vertexBuffer = nullptr; 
+
 	vector<uint32> _indices; // uint16 중 선택사항인데 일단은 4바이트로 가본다.인덱스 목록 CPU에 들고 있음. 
-	ComPtr<ID3D11Buffer> _indexBuffer = nullptr; 
-	ComPtr<ID3D11InputLayout> _inputLayout = nullptr;
+	IndexBuffer* _indexBuffer;
+	InputLayout* _inputLayout; 
+	//ComPtr<ID3D11InputLayout> _inputLayout = nullptr;
 
 	// VS
 	ComPtr<ID3D11VertexShader> _vertexShader = nullptr; 

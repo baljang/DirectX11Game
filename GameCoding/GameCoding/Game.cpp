@@ -15,6 +15,9 @@ void Game::Init(HWND hwnd)
 
 	//_graphics = make_shared<Graphics>(hwnd); 
 	_graphics = new Graphics(hwnd); 
+	_vertexBuffer = new VertexBuffer(_graphics->GetDevice()); 
+	_indexBuffer = new IndexBuffer(_graphics->GetDevice()); 
+	_inputLayout = new InputLayout(_graphics->GetDevice());
 
 	CreateGeometry(); 
 	CreateVS(); 
@@ -65,9 +68,9 @@ void Game::Render()
 
 		// IA
 		// 코딩하는게 아니라 세팅하는 거
-		_deviceContext->IASetVertexBuffers(0, 1, _vertexBuffer.GetAddressOf(), &stride, &offset); 
-		_deviceContext->IASetIndexBuffer(_indexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0); 
-		_deviceContext->IASetInputLayout(_inputLayout.Get()); // 어떻게 생겨먹은 애인지 묘사해줘야 해
+		_deviceContext->IASetVertexBuffers(0, 1, _vertexBuffer->GetComPtr().GetAddressOf(), &stride, &offset);
+		_deviceContext->IASetIndexBuffer(_indexBuffer->GetComPtr().Get(), DXGI_FORMAT_R32_UINT, 0);
+		_deviceContext->IASetInputLayout(_inputLayout->GetComPtr().Get()); // 어떻게 생겨먹은 애인지 묘사해줘야 해
 		_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // 삼각형으로 인지를 해달라 부탁 
 
 		// VS
@@ -121,20 +124,7 @@ void Game::CreateGeometry()
 
 	// VertexBuffer
 	{
-		D3D11_BUFFER_DESC desc; 
-		ZeroMemory(&desc, sizeof(desc)); 
-		desc.Usage = D3D11_USAGE_IMMUTABLE; 
-		desc.BindFlags = D3D11_BIND_VERTEX_BUFFER; // Input assembler에서 건내 주는 vertex buffer를 만들고 있는 것이기 때문
-		desc.ByteWidth = (uint32)(sizeof(Vertex) * _vertices.size()); 
-
-		D3D11_SUBRESOURCE_DATA data; 
-		ZeroMemory(&data, sizeof(data)); 
-		data.pSysMem = _vertices.data(); // &_vertices[0];와 같은 의미
-
-		HRESULT hr = _graphics->GetDevice()->CreateBuffer(&desc, &data, _vertexBuffer.GetAddressOf()); 
-		// 설정한 값 desc, data에 의해가지고 GPU 쪽에 버퍼가 만들어 지면서 CPU의 메모리에서 들고 있었던 vertices에 관한 정보가 
-		// 복사가 되어 넘어 간다. 그 다음 부터는 GPU의 메모리만 Read Only로 사용하겠구나 예측이 가능하다.  
-		CHECK(hr); 
+		_vertexBuffer->Create(_vertices);
 	}
 
 	// Index
@@ -144,32 +134,20 @@ void Game::CreateGeometry()
 
 	// IndexBuffer
 	{
-		D3D11_BUFFER_DESC desc;
-		ZeroMemory(&desc, sizeof(desc));
-		desc.Usage = D3D11_USAGE_IMMUTABLE;
-		desc.BindFlags = D3D11_BIND_INDEX_BUFFER; // Input assembler에서 건내 주는 index buffer를 만들고 있는 것이기 때문
-		desc.ByteWidth = (uint32)(sizeof(uint32) * _indices.size());
-
-		D3D11_SUBRESOURCE_DATA data;
-		ZeroMemory(&data, sizeof(data));
-		data.pSysMem = _indices.data(); // &_indices[0];와 같은 의미
-
-		HRESULT hr = _graphics->GetDevice()->CreateBuffer(&desc, &data, _indexBuffer.GetAddressOf());
-		CHECK(hr); 
+		_indexBuffer->Create(_indices); 
 	}
 
 }
 
 void Game::CreateInputLayout()
 {
-	D3D11_INPUT_ELEMENT_DESC layout[] =
+	vector<D3D11_INPUT_ELEMENT_DESC> layout
 	{
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
 		{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0}, // 12바이트 부터 컬러가 시작 offset
 	};
 
-	const int32 count = sizeof(layout) / sizeof(D3D11_INPUT_ELEMENT_DESC);
-	_graphics->GetDevice()->CreateInputLayout(layout, count, _vsBlob->GetBufferPointer(), _vsBlob->GetBufferSize(), _inputLayout.GetAddressOf());  //세번째 인자로 Shader에 대한 정보를 받아주고 있어. 그래서 Shader를 먼저 만들어서 로드를 해야겠구나 알 수 있는 거. 
+	_inputLayout->Create(layout, _vsBlob);
 }
 
 // 셰이더를 로드해서 Blob이라는 걸 만들어준 다음에 그 Blob에 있는 정보들을 이용해서 Vertex shader를 만들어주면 최종적으로 완료가 되면 _vertexShader가 채워진다. 
