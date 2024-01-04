@@ -100,6 +100,15 @@
     <ClInclude Include="VertexData.h">
       <Filter>Source Files\00. Engine\Pipeline\00.Geometry</Filter>
     </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>Source Files\00. Engine\Pipeline\02. VertexShader</Filter>
+    </ClInclude>
+    <ClInclude Include="ConstantBuffer.h">
+      <Filter>Source Files\00. Engine\Pipeline\02. VertexShader</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Source Files\00. Engine\Pipeline\04. PixelShader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="GameCoding.ico">
@@ -142,6 +151,15 @@
     </ClCompile>
     <ClCompile Include="VertexData.cpp">
       <Filter>Source Files\00. Engine\Pipeline\00.Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>Source Files\00. Engine\Pipeline\02. VertexShader</Filter>
+    </ClCompile>
+    <ClCompile Include="ConstantBuffer.cpp">
+      <Filter>Source Files\00. Engine\Pipeline\02. VertexShader</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Source Files\00. Engine\Pipeline\04. PixelShader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

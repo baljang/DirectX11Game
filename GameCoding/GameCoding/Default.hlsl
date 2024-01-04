@@ -41,7 +41,6 @@ VS_OUTPUT VS(VS_INPUT input)
 
 Texture2D texture0 : register(t0); 
 // t가 Texture의 약자이고, t0 register에다가 teture0이라는 아이를 등록을 할 것이다 라고 예꼬를 하는 거. 
-Texture2D texture1 : register(t1);
 
 SamplerState sampler0 : register(s0); 
 // 이렇게 texture와 sampler가 정해 지면 color를 정할 때 바로 input.을 하는게 아니라 textured0에다가 Sample이란 함수 이용 
