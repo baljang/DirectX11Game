@@ -47,6 +47,9 @@
     <Filter Include="Source Files\00. Engine\Pipeline\05. OutputMerger">
       <UniqueIdentifier>{41b3c66b-1f2e-4dbb-8e9f-bc90d353dcaa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\00. Engine\Pipeline\GameObject">
+      <UniqueIdentifier>{d8f5c860-2992-4f86-a0bd-7fae629ade8e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -121,6 +124,9 @@
     <ClInclude Include="Pipeline.h">
       <Filter>Source Files\00. Engine\Pipeline</Filter>
     </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>Source Files\00. Engine\Pipeline\GameObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="GameCoding.ico">
@@ -185,9 +191,15 @@
     <ClCompile Include="Pipeline.cpp">
       <Filter>Source Files\00. Engine\Pipeline</Filter>
     </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>Source Files\00. Engine\Pipeline\GameObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Default.hlsl">
+      <Filter>Source Files\98. Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Color.hlsl">
       <Filter>Source Files\98. Shader</Filter>
     </FxCompile>
   </ItemGroup>
