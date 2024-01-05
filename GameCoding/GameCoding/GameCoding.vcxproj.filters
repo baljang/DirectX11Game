@@ -109,6 +109,18 @@
     <ClInclude Include="Texture.h">
       <Filter>Source Files\00. Engine\Pipeline\04. PixelShader</Filter>
     </ClInclude>
+    <ClInclude Include="RasterizerState.h">
+      <Filter>Source Files\00. Engine\Pipeline\03. Rasterizer</Filter>
+    </ClInclude>
+    <ClInclude Include="SamplerState.h">
+      <Filter>Source Files\00. Engine\Pipeline\04. PixelShader</Filter>
+    </ClInclude>
+    <ClInclude Include="BlendState.h">
+      <Filter>Source Files\00. Engine\Pipeline\05. OutputMerger</Filter>
+    </ClInclude>
+    <ClInclude Include="Pipeline.h">
+      <Filter>Source Files\00. Engine\Pipeline</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="GameCoding.ico">
@@ -160,6 +172,18 @@
     </ClCompile>
     <ClCompile Include="Texture.cpp">
       <Filter>Source Files\00. Engine\Pipeline\04. PixelShader</Filter>
+    </ClCompile>
+    <ClCompile Include="RasterizerState.cpp">
+      <Filter>Source Files\00. Engine\Pipeline\03. Rasterizer</Filter>
+    </ClCompile>
+    <ClCompile Include="SamplerState.cpp">
+      <Filter>Source Files\00. Engine\Pipeline\04. PixelShader</Filter>
+    </ClCompile>
+    <ClCompile Include="BlendState.cpp">
+      <Filter>Source Files\00. Engine\Pipeline\05. OutputMerger</Filter>
+    </ClCompile>
+    <ClCompile Include="Pipeline.cpp">
+      <Filter>Source Files\00. Engine\Pipeline</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
