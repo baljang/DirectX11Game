@@ -53,6 +53,15 @@
     <Filter Include="Source Files\00. Engine\Component">
       <UniqueIdentifier>{2cead8cc-a46a-4292-92d0-3b1c8dda006e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\00. Engine\Component\Animation">
+      <UniqueIdentifier>{3be93eb0-bb20-4e4b-a84d-145b6cd2fffd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\00. Engine\Component\Camera">
+      <UniqueIdentifier>{752db694-ed2c-4a74-9e7d-ed47563593f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\00. Engine\Component\Rendering">
+      <UniqueIdentifier>{7ca7764f-63f2-44c6-95d5-1e738082aaf7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -136,6 +145,12 @@
     <ClInclude Include="Transform.h">
       <Filter>Source Files\00. Engine\Component</Filter>
     </ClInclude>
+    <ClInclude Include="MonoBehaviour.h">
+      <Filter>Source Files\00. Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Source Files\00. Engine\Component\Camera</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="GameCoding.ico">
@@ -208,6 +223,12 @@
     </ClCompile>
     <ClCompile Include="Transform.cpp">
       <Filter>Source Files\00. Engine\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="MonoBehaviour.cpp">
+      <Filter>Source Files\00. Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Source Files\00. Engine\Component\Camera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

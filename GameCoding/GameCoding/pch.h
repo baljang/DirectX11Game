@@ -9,6 +9,7 @@
 // STL
 #include <memory>
 #include <iostream>
+#include <array>
 #include <vector>
 #include <list>
 #include <map>

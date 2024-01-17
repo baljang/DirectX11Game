@@ -1,5 +1,6 @@
 ﻿#include "pch.h"
 #include "Game.h"
+#include "Camera.h"
 
 Game::Game()
 {
@@ -16,12 +17,23 @@ void Game::Init(HWND hwnd)
 	_graphics = make_shared<Graphics>(hwnd); 
 	_pipeline = make_shared<Pipeline>(_graphics->GetDeviceContext());
 
-	_gameObject = make_shared<GameObject>(_graphics->GetDevice(), _graphics->GetDeviceContext());
+	_monster = make_shared<GameObject>(_graphics->GetDevice(), _graphics->GetDeviceContext());
+	{
+		_monster->GetOrAddTransform(); 
+		// ..
+	}
+
+	_camera = make_shared<GameObject>(_graphics->GetDevice(), _graphics->GetDeviceContext());
+	{
+		_camera->GetOrAddTransform();
+		_camera->AddComponent(make_shared<Camera>());
+	}
 }
 
 void Game::Update()
 {
-	_gameObject->Update(); 
+	_monster->Update(); 
+	_camera->Update(); 
 }
 
 void Game::Render()
@@ -30,7 +42,7 @@ void Game::Render()
 
 	// IA - VS - RS - PS - OM
 	{
-		_gameObject->Render(_pipeline); 
+		_monster->Render(_pipeline); 
 	}
 
 	_graphics->RenderEnd();
