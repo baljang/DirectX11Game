@@ -13,12 +13,18 @@ struct VS_OUTPUT
     float2 uv : TEXCOORD;
 };
 
-cbuffer TransformData : register(b0) // 상수 버서 TransfromData를 받아 줄 건데, 버퍼의 약자인 b0를 받아 주도록 할거야. 
+cbuffer CameraData : register(b0) 
 { 
-    row_major matrix matWorld;
     row_major matrix matView;
     row_major matrix matProjection;
 }
+
+cbuffer TransformData : register(b1) 
+{
+    row_major matrix matWorld;
+}
+
+
 
 
 // IA-VS-RS-PS-OM

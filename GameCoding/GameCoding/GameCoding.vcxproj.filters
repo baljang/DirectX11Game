@@ -151,6 +151,9 @@
     <ClInclude Include="Camera.h">
       <Filter>Source Files\00. Engine\Component\Camera</Filter>
     </ClInclude>
+    <ClInclude Include="MeshRenderer.h">
+      <Filter>Source Files\00. Engine\Component\Rendering</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="GameCoding.ico">
@@ -229,6 +232,9 @@
     </ClCompile>
     <ClCompile Include="Camera.cpp">
       <Filter>Source Files\00. Engine\Component\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshRenderer.cpp">
+      <Filter>Source Files\00. Engine\Component\Rendering</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
