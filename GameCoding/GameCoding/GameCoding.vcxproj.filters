@@ -62,6 +62,18 @@
     <Filter Include="Source Files\00. Engine\Component\Rendering">
       <UniqueIdentifier>{7ca7764f-63f2-44c6-95d5-1e738082aaf7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\00. Engine\Manager">
+      <UniqueIdentifier>{f3f11497-03ce-4938-86dc-b4c42da180b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\00. Engine\Manager\Input">
+      <UniqueIdentifier>{14fa76e3-5b10-4235-915f-c1320bb15c2a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\00. Engine\Manager\Scene">
+      <UniqueIdentifier>{5a7c6f4b-601d-4059-b4b7-7399ea1e42ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\00. Engine\Manager\Time">
+      <UniqueIdentifier>{0d56ef39-4905-49cd-91a9-18dc22f17336}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -154,6 +166,12 @@
     <ClInclude Include="MeshRenderer.h">
       <Filter>Source Files\00. Engine\Component\Rendering</Filter>
     </ClInclude>
+    <ClInclude Include="SceneManager.h">
+      <Filter>Source Files\00. Engine\Manager\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>Source Files\00. Engine\Manager\Scene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="GameCoding.ico">
@@ -235,6 +253,12 @@
     </ClCompile>
     <ClCompile Include="MeshRenderer.cpp">
       <Filter>Source Files\00. Engine\Component\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneManager.cpp">
+      <Filter>Source Files\00. Engine\Manager\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>Source Files\00. Engine\Manager\Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

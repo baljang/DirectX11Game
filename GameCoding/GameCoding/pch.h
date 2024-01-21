@@ -42,6 +42,10 @@ using namespace Microsoft::WRL;
 
 #define CHECK(p)		assert(SUCCEEDED(p))
 
+#include "Game.h"
+#define			GAME		GGame
+#define			SCENE		GAME->GetSceneManager()
+
 // Engine
 #include "Graphics.h"
 #include "VertexBuffer.h"
