@@ -74,6 +74,12 @@
     <Filter Include="Source Files\00. Engine\Manager\Time">
       <UniqueIdentifier>{0d56ef39-4905-49cd-91a9-18dc22f17336}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\00. Engine\Manager\Resource">
+      <UniqueIdentifier>{aff8aaac-339d-4fcb-b2ec-816722b71cfc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\00. Engine\Resource">
+      <UniqueIdentifier>{86e7e0ee-29af-4466-8bc6-240cf30de288}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -127,14 +133,11 @@
     <ClInclude Include="VertexData.h">
       <Filter>Source Files\00. Engine\Pipeline\00.Geometry</Filter>
     </ClInclude>
-    <ClInclude Include="Shader.h">
+    <ClInclude Include="ShaderBase.h">
       <Filter>Source Files\00. Engine\Pipeline\02. VertexShader</Filter>
     </ClInclude>
     <ClInclude Include="ConstantBuffer.h">
       <Filter>Source Files\00. Engine\Pipeline\02. VertexShader</Filter>
-    </ClInclude>
-    <ClInclude Include="Texture.h">
-      <Filter>Source Files\00. Engine\Pipeline\04. PixelShader</Filter>
     </ClInclude>
     <ClInclude Include="RasterizerState.h">
       <Filter>Source Files\00. Engine\Pipeline\03. Rasterizer</Filter>
@@ -171,6 +174,33 @@
     </ClInclude>
     <ClInclude Include="Scene.h">
       <Filter>Source Files\00. Engine\Manager\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="InputManager.h">
+      <Filter>Source Files\00. Engine\Manager\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="TimeManager.h">
+      <Filter>Source Files\00. Engine\Manager\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceBase.h">
+      <Filter>Source Files\00. Engine\Manager\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceManager.h">
+      <Filter>Source Files\00. Engine\Manager\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Source Files\00. Engine\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>Source Files\00. Engine\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>Source Files\00. Engine\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Source Files\00. Engine\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation.h">
+      <Filter>Source Files\00. Engine\Resource</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -215,14 +245,11 @@
     <ClCompile Include="VertexData.cpp">
       <Filter>Source Files\00. Engine\Pipeline\00.Geometry</Filter>
     </ClCompile>
-    <ClCompile Include="Shader.cpp">
+    <ClCompile Include="ShaderBase.cpp">
       <Filter>Source Files\00. Engine\Pipeline\02. VertexShader</Filter>
     </ClCompile>
     <ClCompile Include="ConstantBuffer.cpp">
       <Filter>Source Files\00. Engine\Pipeline\02. VertexShader</Filter>
-    </ClCompile>
-    <ClCompile Include="Texture.cpp">
-      <Filter>Source Files\00. Engine\Pipeline\04. PixelShader</Filter>
     </ClCompile>
     <ClCompile Include="RasterizerState.cpp">
       <Filter>Source Files\00. Engine\Pipeline\03. Rasterizer</Filter>
@@ -259,6 +286,33 @@
     </ClCompile>
     <ClCompile Include="Scene.cpp">
       <Filter>Source Files\00. Engine\Manager\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="InputManager.cpp">
+      <Filter>Source Files\00. Engine\Manager\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="TimeManager.cpp">
+      <Filter>Source Files\00. Engine\Manager\Time</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceBase.cpp">
+      <Filter>Source Files\00. Engine\Manager\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceManager.cpp">
+      <Filter>Source Files\00. Engine\Manager\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Source Files\00. Engine\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>Source Files\00. Engine\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Material.cpp">
+      <Filter>Source Files\00. Engine\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Source Files\00. Engine\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation.cpp">
+      <Filter>Source Files\00. Engine\Resource</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

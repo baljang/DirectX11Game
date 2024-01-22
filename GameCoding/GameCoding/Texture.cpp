@@ -1,7 +1,8 @@
 ﻿#include "pch.h"
 #include "Texture.h"
 
-Texture::Texture(ComPtr<ID3D11Device> device) : _device(device)
+Texture::Texture(ComPtr<ID3D11Device> device) 
+	: Super(ResourceType::Texture), _device(device)
 {
 }
 
