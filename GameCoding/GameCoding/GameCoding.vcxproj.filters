@@ -80,6 +80,9 @@
     <Filter Include="Source Files\00. Engine\Resource">
       <UniqueIdentifier>{86e7e0ee-29af-4466-8bc6-240cf30de288}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\00. Engine\Manager\Render">
+      <UniqueIdentifier>{a42962de-72e9-48c8-8926-b636e9b9d922}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -202,6 +205,12 @@
     <ClInclude Include="Animation.h">
       <Filter>Source Files\00. Engine\Resource</Filter>
     </ClInclude>
+    <ClInclude Include="RenderManager.h">
+      <Filter>Source Files\00. Engine\Manager\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderHelper.h">
+      <Filter>Source Files\00. Engine\Manager\Render</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="GameCoding.ico">
@@ -313,6 +322,12 @@
     </ClCompile>
     <ClCompile Include="Animation.cpp">
       <Filter>Source Files\00. Engine\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderManager.cpp">
+      <Filter>Source Files\00. Engine\Manager\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderHelper.cpp">
+      <Filter>Source Files\00. Engine\Manager\Render</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
