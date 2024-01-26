@@ -6,6 +6,7 @@
 #include "Game.h"
 #include "SceneManager.h"
 #include "Scene.h"
+#include "Mesh.h"
 
 RenderManager::RenderManager(ComPtr<ID3D11Device> device, ComPtr<ID3D11DeviceContext> deviceContext)
 	: _device(device), _deviceContext(deviceContext)
@@ -84,22 +85,22 @@ void RenderManager::RenderObjects()
 
 		// IA - VS - RS - PS - OM
 		PipelineInfo info;
-		info.inputLayout = meshRenderer->_inputLayout;
-		info.vertexShader = meshRenderer->_vertexShader;
-		info.pixelShader = meshRenderer->_pixelShader;
+		info.inputLayout = meshRenderer->GetInputLayout();
+		info.vertexShader = meshRenderer->GetVertexShader();
+		info.pixelShader = meshRenderer->GetPixelShader();
 		info.rasterizerState = _rasterizerState;
 		info.blendState = _blendState;
 		_pipeline->UpdatePipeline(info);
 
-		_pipeline->SetVertexBuffer(meshRenderer->_vertexBuffer);
-		_pipeline->SetIndexBuffer(meshRenderer->_indexBuffer);
+		_pipeline->SetVertexBuffer(meshRenderer->GetMesh()->GetVertexBuffer());
+		_pipeline->SetIndexBuffer(meshRenderer->GetMesh()->GetIndexBuffer());
 
 		_pipeline->SetConstantBuffer(0, SS_VertexShader, _cameraBuffer);
 		_pipeline->SetConstantBuffer(1, SS_VertexShader, _transformBuffer);
 
-		_pipeline->SetTexture(0, SS_PixelShader, meshRenderer->_texture1);
+		_pipeline->SetTexture(0, SS_PixelShader, meshRenderer->GetTexture());
 		_pipeline->SetSamplerState(0, SS_PixelShader, _samplerState);
 
-		_pipeline->DrawIndexed(meshRenderer->_geometry->GetIndexCount(), 0, 0);
+		_pipeline->DrawIndexed(meshRenderer->GetMesh()->GetIndexBuffer()->GetCount(), 0, 0);
 	}
 }
