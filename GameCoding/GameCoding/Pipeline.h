@@ -35,7 +35,7 @@ public:
 		if(scope & SS_VertexShader)
 			_deviceContext->VSSetConstantBuffers(slot, 1, buffer->GetComPtr().GetAddressOf());
 		if (scope & SS_PixelShader)
-		_deviceContext->PSSetConstantBuffers(slot, 1, buffer->GetComPtr().GetAddressOf());
+			_deviceContext->PSSetConstantBuffers(slot, 1, buffer->GetComPtr().GetAddressOf());
 	}
 	
 	// slot은 chiikawa일지 hachiware일지
