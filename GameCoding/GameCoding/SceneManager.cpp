@@ -47,7 +47,6 @@ void SceneManager::LoadScene(wstring sceneName)
 	Init(); 
 }
 
-#include "CameraMove.h"
 shared_ptr<Scene> SceneManager::LoadTestScene()
 {
 	shared_ptr<Scene> scene = make_shared<Scene>(); 
@@ -59,9 +58,6 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 			camera->GetOrAddTransform();
 			camera->AddComponent(make_shared<Camera>());
 			scene->AddGameObject(camera); 
-		}
-		{
-			camera->AddComponent(make_shared<CameraMove>()); 
 		}
 	}
 

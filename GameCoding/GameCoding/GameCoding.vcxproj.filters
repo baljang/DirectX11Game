@@ -214,8 +214,8 @@
     <ClInclude Include="Animator.h">
       <Filter>Source Files\00. Engine\Component\Animation</Filter>
     </ClInclude>
-    <ClInclude Include="CameraMove.h">
-      <Filter>Source Files\01. Main</Filter>
+    <ClInclude Include="tinyxml2.h">
+      <Filter>Source Files\99. Header\Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -338,8 +338,8 @@
     <ClCompile Include="Animator.cpp">
       <Filter>Source Files\00. Engine\Component\Animation</Filter>
     </ClCompile>
-    <ClCompile Include="CameraMove.cpp">
-      <Filter>Source Files\01. Main</Filter>
+    <ClCompile Include="tinyxml2.cpp">
+      <Filter>Source Files\99. Header\Utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
