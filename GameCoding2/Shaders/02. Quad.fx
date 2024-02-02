@@ -1,4 +1,4 @@
-﻿struct VertexInput
+struct VertexInput
 {
     float4 position : POSITION; // POSITION을 찾아서 연결해 줄 것이다.
     float4 color : COLOR;
