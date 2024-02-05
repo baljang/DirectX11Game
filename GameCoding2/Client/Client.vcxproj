@@ -21,6 +21,8 @@
   <ItemGroup>
     <ClInclude Include="02. QuadDemo.h" />
     <ClInclude Include="03. ConstBufferDemo.h" />
+    <ClInclude Include="04. CameraDemo.h" />
+    <ClInclude Include="CameraScript.h" />
     <ClInclude Include="Main.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="01. TriangleDemo.h" />
@@ -28,6 +30,8 @@
   <ItemGroup>
     <ClCompile Include="02. QuadDemo.cpp" />
     <ClCompile Include="03. ConstBufferDemo.cpp" />
+    <ClCompile Include="04. CameraDemo.cpp" />
+    <ClCompile Include="CameraScript.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -58,6 +62,7 @@
     </FxCompile>
     <FxCompile Include="..\Shaders\02. Quad.fx" />
     <FxCompile Include="..\Shaders\03. ConstBuffer.fx" />
+    <FxCompile Include="..\Shaders\04. World.fx" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
