@@ -10,7 +10,10 @@ void TextureDemo::Init()
 
 	// Object
 	_geometry = make_shared<Geometry<VertexTextureData>>(); 
-	GeometryHelper::CreateQuad(_geometry); 
+	//GeometryHelper::CreateQuad(_geometry); 
+	//GeometryHelper::CreateCube(_geometry); 
+	//GeometryHelper::CreateSphere(_geometry); 
+	GeometryHelper::CreateGrid(_geometry, 256, 256); 
 	_vertexBuffer = make_shared<VertexBuffer>(); 
 	_vertexBuffer->Create(_geometry->GetVertices()); 
 	_indexBuffer = make_shared<IndexBuffer>(); 
@@ -52,5 +55,5 @@ void TextureDemo::Render()
 	// technique이란 pass를 골라줄 수 있다는 특징이 있다. 
 	// _buffer->GetCount()이걸로 넣어줘도 되지만 몇 개 없으니 3으로 넣어준다.
 	//_shader->Draw(1, 0, 3); 
-	_shader->DrawIndexed(0, 0, _indexBuffer->GetCount(), 0, 0); 
+	_shader->DrawIndexed(0,0, _indexBuffer->GetCount(), 0, 0); 
 }
