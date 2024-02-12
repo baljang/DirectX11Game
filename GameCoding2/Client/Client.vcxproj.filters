@@ -72,6 +72,9 @@
     <ClInclude Include="11. DepthStencilDemo.h">
       <Filter>Game\Week2</Filter>
     </ClInclude>
+    <ClInclude Include="12. AmbientDemo.h">
+      <Filter>Game\Week2</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -116,6 +119,9 @@
     <ClCompile Include="11. DepthStencilDemo.cpp">
       <Filter>Game\Week2</Filter>
     </ClCompile>
+    <ClCompile Include="12. AmbientDemo.cpp">
+      <Filter>Game\Week2</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Shaders\01. Triangle.fx">
@@ -143,6 +149,9 @@
       <Filter>Shader\Common</Filter>
     </FxCompile>
     <FxCompile Include="..\Shaders\08. GlobalTest.fx">
+      <Filter>Shader\Week2</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Shaders\09. Lighting_Ambient.fx">
       <Filter>Shader\Week2</Filter>
     </FxCompile>
   </ItemGroup>

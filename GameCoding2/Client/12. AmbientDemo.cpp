@@ -1,14 +1,14 @@
 ﻿#include "pch.h"
-#include "11. DepthStencilDemo.h"
+#include "12. AmbientDemo.h"
 #include "GeometryHelper.h"
 #include "Camera.h"
 #include "CameraScript.h"
 #include "MeshRenderer.h"
 
-void DepthStencilDemo::Init()
+void AmbientDemo::Init()
 {
 	RESOURCES->Init();
-	_shader = make_shared<Shader>(L"08. GlobalTest.fx");
+	_shader = make_shared<Shader>(L"09. Lighting_Ambient.fx");
 
 	// Camera
 	_camera = make_shared<GameObject>(); 
@@ -51,16 +51,34 @@ void DepthStencilDemo::Init()
 	RENDER->Init(_shader); 
 }
 
-void DepthStencilDemo::Update()
+void AmbientDemo::Update()
 {
 	_camera->Update(); 
 	RENDER->Update(); 
 
-	_obj->Update();
-	_obj2->Update(); 
+	//
+	Vec4 lightAmbient{ 0.f, 1.f, 0.f, 0.f }; 
+	_shader->GetVector("LightAmbient")->SetFloatVector((float*)&lightAmbient); 
+
+	{
+		// 각각의 object가 들고 있는 Material이 있을 것이다. 보통은 MeshRender에다 Material을 끼워 넣는 경우가 많다. 
+		// 지금은 각각 물체마다 따로 설정을 해보도록 한다.
+		Vec4 materialAmbient(1.f); // 하나의 값을 넣어주면 나머지 값은 동일한 값 넣어주는 생성자 실행된다. 
+								   // 모든 빛을 다 받아주는 재질
+		_shader->GetVector("MaterialAmbient")->SetFloatVector((float*)&materialAmbient);
+		_obj->Update();
+
+	}
+
+	{
+		Vec4 materialAmbient(1.f);
+		_shader->GetVector("MaterialAmbient")->SetFloatVector((float*)&materialAmbient);
+		_obj2->Update();
+
+	}
 }
 
-void DepthStencilDemo::Render()
+void AmbientDemo::Render()
 {
 
 }
