@@ -30,6 +30,7 @@ void NormalMappingDemo::Init()
 		desc.ambient = Vec4(1.f); 
 		desc.diffuse = Vec4(1.f); 
 		desc.specular = Vec4(1.f);
+		desc.emissive = Vec4(1.f);
 
 		RESOURCES->Add(L"Leather", material); 
 	}
@@ -76,9 +77,10 @@ void NormalMappingDemo::Update()
 
 	{
 		LightDesc lightDesc;
-		lightDesc.ambient = Vec4(0.5f);
-		lightDesc.diffuse = Vec4(1.f);
-		lightDesc.specular = Vec4(1.f, 1.f, 1.f, 1.f);
+		lightDesc.ambient = Vec4(0.f);
+		lightDesc.diffuse = Vec4(0.f);
+		lightDesc.specular = Vec4(0.f);		
+		lightDesc.emissive = Vec4(1.f, 0.f, 0.f, 1.f);
 		lightDesc.direction = Vec3(1.f, 0.f, 1.f);
 		RENDER->PushLightData(lightDesc);
 	}

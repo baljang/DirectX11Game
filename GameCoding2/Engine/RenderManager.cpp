@@ -33,6 +33,7 @@ void RenderManager::PushGlobalData(const Matrix& view, const Matrix& projection)
 	_globalDesc.V = view;
 	_globalDesc.P = projection;
 	_globalDesc.VP = view * projection; 
+	_globalDesc.VInv = view.Invert(); 
 	_globalBuffer->CopyData(_globalDesc); 
 	_globalEffectBuffer->SetConstantBuffer(_globalBuffer->GetComPtr().Get()); // 00. Global.fx의 GlobalBuffer로  밀어 넣는 작업을 해주고 있는 거다. 
 }
