@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Utils">
+      <UniqueIdentifier>{dd8cc2a0-b273-4eea-ad81-9e6a5987d3de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main">
+      <UniqueIdentifier>{fae55f61-799f-4823-9ba2-d92959eb924b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Main.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraScript.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Converter.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Main.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraScript.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Converter.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
