@@ -3,6 +3,7 @@
 #include <filesystem>
 #include "Utils.h"
 #include "tinyxml2.h"
+#include "FileUtils.h"
 
 Converter::Converter()
 {
@@ -171,7 +172,42 @@ void Converter::ReadMeshData(aiNode* node, int32 bone)
 
 void Converter::WriteModelFile(wstring finalPath)
 {
+	auto path = filesystem::path(finalPath);
+
+	// 폴더가 없으면 만든다.
+	filesystem::create_directory(path.parent_path());
+
+	shared_ptr<FileUtils> file = make_shared<FileUtils>();
+	file->Open(finalPath, FileMode::Write);
+
+	// Bone Data
+	file->Write<uint32>(_bones.size());
+	for (shared_ptr<asBone>& bone : _bones)
+	{
+		file->Write<int32>(bone->index);
+		file->Write<string>(bone->name);
+		file->Write<int32>(bone->parent);
+		file->Write<Matrix>(bone->transform);
+	}
+
+	// Mesh Data
+	file->Write<uint32>(_meshes.size());
+	for (shared_ptr<asMesh>& meshData : _meshes)
+	{
+		file->Write<string>(meshData->name);
+		file->Write<int32>(meshData->boneIndex);
+		file->Write<string>(meshData->materialName);
+
+		// Vertex Data
+		file->Write<uint32>(meshData->vertices.size());
+		file->Write(&meshData->vertices[0], sizeof(VertexType) * meshData->vertices.size());
+
+		// Index Data
+		file->Write<uint32>(meshData->indices.size());
+		file->Write(&meshData->indices[0], sizeof(uint32) * meshData->indices.size());
+	}
 }
+
 
 void Converter::ReadMaterialData()
 {
@@ -315,9 +351,9 @@ string Converter::WriteTexture(string saveFolder, string file)
 
 		if (srcTexture->mHeight == 0) // 데이터가 1차원 배열 형태로 저장되어 있다면 바이너리 모드로 만든다.
 		{
-			/*shared_ptr<FileUtils> file = make_shared<FileUtils>();
+			shared_ptr<FileUtils> file = make_shared<FileUtils>();
 			file->Open(Utils::ToWString(pathStr), FileMode::Write);
-			file->Write(srcTexture->pcData, srcTexture->mWidth);*/
+			file->Write(srcTexture->pcData, srcTexture->mWidth);
 		}
 		else // fbx에 1차원 배열이 아닌 2차원 텍스쳐가 있다면 내부에 있는 걸 끄집어 내서 별도의 파일로 만드는 경우
 		{
