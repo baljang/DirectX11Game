@@ -21,8 +21,8 @@ void StaticMeshDemo::Init()
 	_camera->AddComponent(make_shared<Camera>());
 	_camera->AddComponent(make_shared<CameraScript>());
 
-	CreateTower();
-	//CreateTank();
+	//CreateTower();
+	CreateTank();
 
 	RENDER->Init(_shader);
 }
@@ -69,20 +69,20 @@ void StaticMeshDemo::CreateTower()
 	}
 }
 
-//void StaticMeshDemo::CreateTank()
-//{
-//	// CustomData -> Memory
-//	shared_ptr<class Model> m1 = make_shared<Model>();
-//	m1->ReadModel(L"Tank/Tank");
-//	m1->ReadMaterial(L"Tank/Tank");
-//
-//	_obj = make_shared<GameObject>();
-//	_obj->GetOrAddTransform()->SetPosition(Vec3(0, 0, 50));
-//	_obj->GetOrAddTransform()->SetScale(Vec3(1.f));
-//
-//	_obj->AddComponent(make_shared<ModelRenderer>(_shader));
-//	{
-//		_obj->GetModelRenderer()->SetModel(m1);
-//		_obj->GetModelRenderer()->SetPass(1);
-//	}
-//}
+void StaticMeshDemo::CreateTank()
+{
+	// CustomData -> Memory
+	shared_ptr<class Model> m1 = make_shared<Model>();
+	m1->ReadModel(L"Tank/Tank");
+	m1->ReadMaterial(L"Tank/Tank");
+
+	_obj = make_shared<GameObject>();
+	_obj->GetOrAddTransform()->SetPosition(Vec3(0, 0, 50));
+	_obj->GetOrAddTransform()->SetScale(Vec3(1.f));
+
+	_obj->AddComponent(make_shared<ModelRenderer>(_shader));
+	{
+		_obj->GetModelRenderer()->SetModel(m1);
+		_obj->GetModelRenderer()->SetPass(1);
+	}
+}
