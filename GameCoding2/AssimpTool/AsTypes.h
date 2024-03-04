@@ -110,3 +110,36 @@ struct asBoneWeights
 	using Pair = pair<int32, float>; // boneIndex, weight
 	vector<Pair> boneWeights; // 나중엔 4개 이상이면 정렬해서 가중치 높은 순서로 커트할 것이다. 
 };
+
+
+struct asKeyframeData
+{
+	float time; 
+	Vec3 scale;
+	Quaternion rotation;
+	Vec3 translation;
+};
+
+// 애니메이션의 뼈대 하나의 transform의 배열을 말한다.
+struct asKeyframe
+{
+	string boneName;
+	vector<asKeyframeData> transforms;
+};
+
+struct asAnimation
+{
+	string name; 
+	uint32 frameCount; // 몇 프레임 짜리 인지 
+	float frameRate; // 30 이라면 1/30초마다 다음 그림으로 넘어간다는 얘기 
+	float duration; // 얼마만큼 지속이 되는지 
+	vector<shared_ptr<asKeyframe>> keyframes;	// 매 프레임마다 어떠한 정보로 틀어주면 되는지
+	// 관절마다 어떻게 프레임마다 변화를 하는지에 대한 정보를 담고 있다.
+};
+
+// Cache
+struct asAnimationNode
+{
+	aiString name; 
+	vector<asKeyframeData> keyframe; 
+};

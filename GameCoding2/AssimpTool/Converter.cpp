@@ -83,6 +83,15 @@ void Converter::ExportMaterialData(wstring savePath)
 	WriteMaterialData(finalPath); 
 }
 
+void Converter::ExportAnimationData(wstring savePath, uint32 index)
+{
+	wstring finalPath = _modelPath + savePath + L".clip"; 
+	assert(index < _scene->mNumAnimations); 
+
+	shared_ptr<asAnimation> animation = ReadAnimationData(_scene->mAnimations[index]);
+	WriteAnimationData(animation, finalPath);
+}
+
 void Converter::ReadModelData(aiNode* node, int32 index, int32 parent)
 {
 	shared_ptr<asBone> bone = make_shared<asBone>(); 
@@ -426,7 +435,7 @@ string Converter::WriteTexture(string saveFolder, string file)
 
 	if (srcTexture) // fbx에 텍스쳐가 들어가 있는 경우
 	{
-		string pathStr = saveFolder + fileName;
+		string pathStr = (filesystem::path(saveFolder) / fileName).string();
 
 		if (srcTexture->mHeight == 0) // 데이터가 1차원 배열 형태로 저장되어 있다면 바이너리 모드로 만든다.
 		{
@@ -474,6 +483,164 @@ string Converter::WriteTexture(string saveFolder, string file)
 	}
 
 	return fileName;
+}
+
+shared_ptr<asAnimation> Converter::ReadAnimationData(aiAnimation* srcAnimation)
+{
+	shared_ptr<asAnimation> animation = make_shared<asAnimation>(); 
+	animation->name = srcAnimation->mName.C_Str(); 
+	animation->frameRate = (float)srcAnimation->mTicksPerSecond; 
+	animation->frameCount = (uint32)srcAnimation->mDuration + 1; // 10초 짜리면 framedl 0부터 시작하니까 0~10까지 11개가 된다. 
+
+	map<string, shared_ptr<asAnimationNode>> cacheAnimNodes; 
+
+	for (uint32 i = 0; i < srcAnimation->mNumChannels; i++)
+	{
+		aiNodeAnim* srcNode = srcAnimation->mChannels[i]; // Each channel affects a single node
+
+		// 애니메이션 노드 데이터 파싱
+		shared_ptr<asAnimationNode> node = ParseAnimationNode(animation, srcNode); 
+	
+		// 현재 찾은 노드 중에 제일 긴 시간으로 애니메이션 시간 갱신
+		animation->duration = max(animation->duration, node->keyframe.back().time);
+
+		cacheAnimNodes[srcNode->mNodeName.C_Str()] = node; // 이름에다가 만들어준 노드를 기입해서 임시적으로 들고 있는다. 
+	}
+
+	ReadKeyframeData(animation, _scene->mRootNode, cacheAnimNodes);
+
+	return animation;
+}
+
+shared_ptr<asAnimationNode> Converter::ParseAnimationNode(shared_ptr<asAnimation> animation, aiNodeAnim* srcNode)
+{
+	std::shared_ptr<asAnimationNode> node = make_shared<asAnimationNode>(); 
+	node->name = srcNode->mNodeName; 
+
+	// srcNode->mNumPositionKeys, mNumRotationKeys, mNumScalingKeys 이렇게 있는데 따로 하지 않고, 
+	// 3개를 동시에 관리하도록 3개 중에 가장 큰 값으로 keyCount를 고정할 것이다.
+	// 최적화 보다 실행되게 하는게 목적이니 비효율적이라 하더라도 편리성을 생각해서 작업을 한다. 
+	// 유니티에서 애니메이션 파일을 넣었을 때 어떻게 될지 나중에 살펴 본다. 
+	// 그래서 셋 중에서 가장 큰 것을 골라주기 위해서 
+	uint32 keyCount = max(max(srcNode->mNumPositionKeys, srcNode->mNumScalingKeys), srcNode->mNumRotationKeys);
+
+	for (uint32 k = 0; k < keyCount; k++)
+	{
+		asKeyframeData frameData;
+
+		bool found = false;
+		uint32 t = node->keyframe.size(); // 최근 반목문 째에 몇 개까지 채웠는지
+
+		// Position
+		// 애니메이션 파일을 보면 0,1,2,3,4,5초 마다 무엇인가가 들어가 있을 것이다. 각 초에 뭐가 있는지 추출을 해가지고 그것에 값이 있으면 key에 값을 넣어주는 것이다. 
+		if (::fabsf((float)srcNode->mPositionKeys[k].mTime - (float)t) <= 0.0001f) // 빼기를 해서 차이가 얼마 이내면 같게 비교하고 있다.
+		{
+			aiVectorKey key = srcNode->mPositionKeys[k];
+			frameData.time = (float)key.mTime;
+			::memcpy_s(&frameData.translation, sizeof(Vec3), &key.mValue, sizeof(aiVector3D));
+
+			found = true;
+		}
+
+		// Rotation
+		if (::fabsf((float)srcNode->mRotationKeys[k].mTime - (float)t) <= 0.0001f)
+		{
+			aiQuatKey key = srcNode->mRotationKeys[k];
+			frameData.time = (float)key.mTime;
+
+			frameData.rotation.x = key.mValue.x;
+			frameData.rotation.y = key.mValue.y;
+			frameData.rotation.z = key.mValue.z;
+			frameData.rotation.w = key.mValue.w;
+
+			found = true;
+		}
+
+		// Scale
+		if (::fabsf((float)srcNode->mScalingKeys[k].mTime - (float)t) <= 0.0001f)
+		{
+			aiVectorKey key = srcNode->mScalingKeys[k];
+			frameData.time = (float)key.mTime;
+			::memcpy_s(&frameData.scale, sizeof(Vec3), &key.mValue, sizeof(aiVector3D));
+
+			found = true;
+		}
+
+		if (found == true)
+			node->keyframe.push_back(frameData);
+	}
+
+	// Keyframe 늘려주기
+	if (node->keyframe.size() < animation->frameCount)
+	{
+		uint32 count = animation->frameCount - node->keyframe.size();
+		asKeyframeData keyFrame = node->keyframe.back();
+
+		for (uint32 n = 0; n < count; n++)
+			node->keyframe.push_back(keyFrame);
+	}
+
+	return node;
+
+}
+
+void Converter::ReadKeyframeData(shared_ptr<asAnimation> animation, aiNode* srcNode, map<string, shared_ptr<asAnimationNode>>& cache)
+{
+	shared_ptr<asKeyframe> keyframe = make_shared<asKeyframe>();
+	keyframe->boneName = srcNode->mName.C_Str();
+
+	shared_ptr<asAnimationNode> findNode = cache[srcNode->mName.C_Str()];
+
+	for (uint32 i = 0; i < animation->frameCount; i++)
+	{
+		asKeyframeData frameData;
+
+		if (findNode == nullptr)
+		{
+			Matrix transform(srcNode->mTransformation[0]);
+			transform = transform.Transpose();
+			frameData.time = (float)i;
+			transform.Decompose(OUT frameData.scale, OUT frameData.rotation, OUT frameData.translation);
+		}
+		else
+		{
+			frameData = findNode->keyframe[i];
+		}
+
+		keyframe->transforms.push_back(frameData);
+	}
+
+	// 애니메이션 키프레임 채우기, 한 노드의 전 프레임 정보를 담은 asKeyfame을 재귀 호출마다 넣어준다. 
+	animation->keyframes.push_back(keyframe);
+
+	for (uint32 i = 0; i < srcNode->mNumChildren; i++)
+		ReadKeyframeData(animation, srcNode->mChildren[i], cache);
+}
+
+void Converter::WriteAnimationData(shared_ptr<asAnimation> animation, wstring finalPath)
+{
+	auto path = filesystem::path(finalPath); 
+
+	// 폴더가 없으면 만든다. 
+	filesystem::create_directory(path.parent_path()); 
+
+	shared_ptr<FileUtils> file = make_shared<FileUtils>(); 
+	file->Open(finalPath, FileMode::Write); 
+
+	file->Write<string>(animation->name); 
+	file->Write<float>(animation->duration); 
+	file->Write<float>(animation->frameRate); 
+	file->Write<uint32>(animation->frameCount); 
+
+	file->Write<uint32>(animation->keyframes.size()); 
+
+	for (shared_ptr<asKeyframe> keyframe : animation->keyframes)
+	{
+		file->Write<string>(keyframe->boneName); 
+
+		file->Write<uint32>(keyframe->transforms.size()); 
+		file->Write(&keyframe->transforms[0], sizeof(asKeyframeData) * keyframe->transforms.size());
+	}
 }
 
 uint32 Converter::GetBoneIndex(const string& name)
