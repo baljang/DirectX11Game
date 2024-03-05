@@ -2,6 +2,7 @@
 
 struct ModelBone;
 struct ModelMesh;
+struct ModelAnimation; 
 
 class Model : public enable_shared_from_this<Model> // 이걸 안붙이면 this 포인터로 사용할 수 없다. 
 {
@@ -15,6 +16,7 @@ public:
 	// xml로 material은 되어 있으니까 그 xml의 그 형식을 그대로 맞춰가지고 다시 거꾸로 순서 맞춰가지고 하나씩 긁어서 읽어오는 작업을 해줘야 한다.
 	void ReadMaterial(wstring filename);
 	void ReadModel(wstring filename);
+	void ReadAnimation(wstring filename); 
 
 	uint32 GetMaterialCount() { return static_cast<uint32>(_materials.size()); }
 	vector<shared_ptr<Material>>& GetMaterials() { return _materials; }
@@ -31,6 +33,11 @@ public:
 	shared_ptr<ModelBone> GetBoneByIndex(uint32 index) { return (index < 0 || index >= _bones.size() ? nullptr : _bones[index]); }
 	shared_ptr<ModelBone> GetBoneByName(const wstring& name);
 
+	uint32 GetAnimationCount() { return _animations.size(); }
+	vector<shared_ptr<ModelAnimation>>& GetAnimations() { return _animations; }
+	shared_ptr<ModelAnimation> GetAnimationByIndex(UINT index) { return (index < 0 || index >= _animations.size()) ? nullptr : _animations[index]; }
+	shared_ptr<ModelAnimation> GetAnimationByName(wstring name);
+
 private:
 	void BindCacheInfo();
 
@@ -44,7 +51,7 @@ private:
 	vector<shared_ptr<Material>> _materials; // mesh를 어떻게 그려줘야 할지
 	vector<shared_ptr<ModelBone>> _bones; // // mesh끼리 서로 상하 관계나 대칭구조
 	vector<shared_ptr<ModelMesh>> _meshes; 
-
+	vector<shared_ptr<ModelAnimation>> _animations; 
 };
 
  

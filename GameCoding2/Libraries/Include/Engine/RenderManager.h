@@ -37,11 +37,11 @@ struct MaterialDesc
 };
 
 // Bone
-#define MAX_BONE_TRANSFORMS 50
+#define MAX_MODEL_TRANSFORMS 250
 
 struct BoneDesc
 {
-	Matrix transform[MAX_BONE_TRANSFORMS]; 
+	Matrix transform[MAX_MODEL_TRANSFORMS]; 
 };
 
 
