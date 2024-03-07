@@ -33,6 +33,8 @@ private:
 	ComPtr<ID3D11Texture2D> _texture; 
 	ComPtr<ID3D11ShaderResourceView> _srv; 
 
+private: 
+	KeyframeDesc _keyframeDesc; 
 
 private:
 	shared_ptr<Shader>	_shader;

@@ -14,6 +14,64 @@ ModelAnimator::~ModelAnimator()
 {
 }
 
+//void ModelAnimator::Update()
+//{
+//	if (_model == nullptr)
+//		return;
+//
+//	// TODO
+//	if (_texture == nullptr)
+//		CreateTexture(); 
+//
+//	// Anim Update
+//	ImGui::InputInt("AnimIndex", &_keyframeDesc.animIndex);
+//	_keyframeDesc.animIndex %= _model->GetAnimationCount();
+//	ImGui::InputInt("CurrFrame", (int*)&_keyframeDesc.currFrame);
+//	_keyframeDesc.currFrame %= _model->GetAnimationByIndex(_keyframeDesc.animIndex)->frameCount;
+//
+//	// 애니메이션 현재 프레임 정보
+//	RENDER->PushKeyframeData(_keyframeDesc);
+// 
+//	// SRV를 통해 정보 전달
+//	_shader->GetSRV("TransformMap")->SetResource(_srv.Get());
+//
+//	// Bones
+//	BoneDesc boneDesc;
+//
+//	const uint32 boneCount = _model->GetBoneCount();
+//
+//	for (uint32 i = 0; i < boneCount; i++)
+//	{
+//		shared_ptr<ModelBone> bone = _model->GetBoneByIndex(i);
+//		boneDesc.transform[i] = bone->transform;
+//		// 안채워 준 값은 쓰레기값이 들어가겠지만 쉐이더에서 사용 안할 예정이라서 일단은 냅둔다.
+//		// 깔끔하게 하려면 identity 행렬을 밀어 준다거나 하는 식으로 작업을 하면 된다.
+//	}
+//	RENDER->PushBoneData(boneDesc);
+//
+//	// Transform
+//	auto world = GetTransform()->GetWorldMatrix();
+//	RENDER->PushTransformData(TransformDesc{ world });
+//
+//	const auto& meshes = _model->GetMeshes();
+//	for (auto& mesh : meshes)
+//	{
+//		if (mesh->material)
+//			mesh->material->Update();
+//
+//		// BoneIndex
+//		_shader->GetScalar("BoneIndex")->SetInt(mesh->boneIndex);
+//
+//		uint32 stride = mesh->vertexBuffer->GetStride();
+//		uint32 offset = mesh->vertexBuffer->GetOffset();
+//
+//		DC->IASetVertexBuffers(0, 1, mesh->vertexBuffer->GetComPtr().GetAddressOf(), &stride, &offset);
+//		DC->IASetIndexBuffer(mesh->indexBuffer->GetComPtr().Get(), DXGI_FORMAT_R32_UINT, 0);
+//
+//		_shader->DrawIndexed(0, _pass, mesh->indexBuffer->GetCount(), 0, 0);
+//	}
+//}
+
 void ModelAnimator::Update()
 {
 	if (_model == nullptr)
@@ -21,7 +79,34 @@ void ModelAnimator::Update()
 
 	// TODO
 	if (_texture == nullptr)
-		CreateTexture(); 
+		CreateTexture();
+
+	_keyframeDesc.sumTime += DT; // Time Manager에서 Delta Time을 추출하여 경과된 시간(초)을 얻는 방식입니다.
+	
+	shared_ptr<ModelAnimation> current = _model->GetAnimationByIndex(_keyframeDesc.animIndex); 
+	if (current)
+	{
+		float timePerFrame = 1 / (current->frameRate * _keyframeDesc.speed); // 1프레임 당 경과되어야 하는 시간
+		if (_keyframeDesc.sumTime >= timePerFrame)
+		{
+			_keyframeDesc.sumTime = 0.f; 
+			_keyframeDesc.currFrame = (_keyframeDesc.currFrame + 1) % current->frameCount; 
+			_keyframeDesc.nextFrame = (_keyframeDesc.currFrame + 1) % current->frameCount; 
+		}
+
+		_keyframeDesc.ratio = (_keyframeDesc.sumTime / timePerFrame); // 경과된 시간/1프레임당시간 -> 0~1사이를 왔다갔다 하면서 이어지게 될 것이다. 
+	}
+
+	// Anim Update
+	ImGui::InputInt("AnimIndex", &_keyframeDesc.animIndex);
+	_keyframeDesc.animIndex %= _model->GetAnimationCount();
+	ImGui::InputFloat("Speed", &_keyframeDesc.speed, 0.5f, 4.f); 
+
+	// 애니메이션 현재 프레임 정보
+	RENDER->PushKeyframeData(_keyframeDesc);
+
+	// SRV를 통해 정보 전달
+	_shader->GetSRV("TransformMap")->SetResource(_srv.Get());
 
 	// Bones
 	BoneDesc boneDesc;
@@ -59,7 +144,6 @@ void ModelAnimator::Update()
 		_shader->DrawIndexed(0, _pass, mesh->indexBuffer->GetCount(), 0, 0);
 	}
 }
-
 void ModelAnimator::SetModel(shared_ptr<Model> model)
 {
 	_model = model; 

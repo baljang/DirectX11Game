@@ -40,13 +40,23 @@ struct MaterialDesc
 #define MAX_MODEL_TRANSFORMS 250
 #define MAX_MODEL_KEYFRAMES 500
 
-
-
 struct BoneDesc
 {
 	Matrix transform[MAX_MODEL_TRANSFORMS]; 
 };
 
+// Animation
+struct KeyframeDesc
+{
+	int32 animIndex = 0; // 현재 실행되는 애니메이션 번호
+	uint32 currFrame = 0;
+	//TODO
+	uint32 nextFrame = 0; 
+	float ratio = 0.f; 
+	float sumTime = 0.f; 
+	float speed = 1.f; 
+	Vec2 padding; 
+};
 
 class RenderManager
 {
@@ -63,6 +73,8 @@ public:
 	void PushLightData(const LightDesc& desc);
 	void PushMaterialData(const MaterialDesc& desc);
 	void PushBoneData(const BoneDesc& desc);
+	void PushKeyframeData(const KeyframeDesc& desc);
+
 
 private: 
 	shared_ptr<Shader> _shader;
@@ -101,5 +113,9 @@ private:
 	BoneDesc _boneDesc;
 	shared_ptr<ConstantBuffer<BoneDesc>> _boneBuffer;
 	ComPtr<ID3DX11EffectConstantBuffer> _boneEffectBuffer;
+
+	KeyframeDesc _keyframeDesc;
+	shared_ptr<ConstantBuffer<KeyframeDesc>> _keyframeBuffer;
+	ComPtr<ID3DX11EffectConstantBuffer> _keyframeEffectBuffer;
 };
 
