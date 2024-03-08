@@ -172,6 +172,7 @@
     <ClInclude Include="Main.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="StaticMeshDemo.h" />
+    <ClInclude Include="TweenDemo.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AnimationDemo.cpp" />
@@ -188,6 +189,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="StaticMeshDemo.cpp" />
+    <ClCompile Include="TweenDemo.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

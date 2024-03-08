@@ -50,12 +50,40 @@ struct KeyframeDesc
 {
 	int32 animIndex = 0; // 현재 실행되는 애니메이션 번호
 	uint32 currFrame = 0;
-	//TODO
 	uint32 nextFrame = 0; 
 	float ratio = 0.f; 
 	float sumTime = 0.f; 
 	float speed = 1.f; 
 	Vec2 padding; 
+};
+
+struct TweenDesc
+{
+	// 꼼꼼하게 안챙기면 엉뚱하게 돌아갈 수 있으니까
+	TweenDesc()
+	{
+		curr.animIndex = 0; 
+		next.animIndex = -1; 
+	}
+
+	// 경우에 따라서 다음 애니메이션이 다 완료되었습니다. 라는 함수를 파줘서 그걸 호출하면 좋을 거 같으니까
+	// 편리하게 초기값으로 밀어주는 함수
+	void ClearNextAnim()
+	{
+		next.animIndex = -1; 
+		next.currFrame = 0; 
+		next.nextFrame = 0;
+		next.sumTime = 0; 
+		tweenSumTime = 0; 
+		tweenRatio = 0;
+	}
+
+	float tweenDuration = 1.0f; 
+	float tweenRatio = 0.f; // 이전 상태에서 다음 상태로 넘어갈 때의 비율
+	float tweenSumTime = 0.f; // 경과된 시간
+	float padding = 0.f; 
+	KeyframeDesc curr; 
+	KeyframeDesc next; 
 };
 
 class RenderManager
@@ -74,7 +102,7 @@ public:
 	void PushMaterialData(const MaterialDesc& desc);
 	void PushBoneData(const BoneDesc& desc);
 	void PushKeyframeData(const KeyframeDesc& desc);
-
+	void PushTweenData(const TweenDesc& desc);
 
 private: 
 	shared_ptr<Shader> _shader;
@@ -117,5 +145,9 @@ private:
 	KeyframeDesc _keyframeDesc;
 	shared_ptr<ConstantBuffer<KeyframeDesc>> _keyframeBuffer;
 	ComPtr<ID3DX11EffectConstantBuffer> _keyframeEffectBuffer;
+
+	TweenDesc _tweenDesc;
+	shared_ptr<ConstantBuffer<TweenDesc>> _tweenBuffer;
+	ComPtr<ID3DX11EffectConstantBuffer> _tweenEffectBuffer;
 };
 
