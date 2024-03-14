@@ -13,9 +13,6 @@
     <Filter Include="Main\Camera">
       <UniqueIdentifier>{06e097a0-1ae9-49f2-97e5-5742655a3889}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\Week2">
-      <UniqueIdentifier>{96f97d84-1d57-421a-9734-3f2fb7aba762}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Shader\Week1">
       <UniqueIdentifier>{fb2ec903-b302-431f-849d-65ff1e06cfb0}</UniqueIdentifier>
     </Filter>
@@ -24,9 +21,6 @@
     </Filter>
     <Filter Include="Shader\Common">
       <UniqueIdentifier>{f476bb52-8d2d-4601-a68e-04e7530a5d53}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Week3">
-      <UniqueIdentifier>{9a274b2d-9147-4b6f-b2fe-7548bb1b753e}</UniqueIdentifier>
     </Filter>
     <Filter Include="Shader\Week3">
       <UniqueIdentifier>{35f4aaae-0876-4757-a9fe-7ae3a3debe6b}</UniqueIdentifier>
@@ -43,7 +37,10 @@
       <Filter>Main\Camera</Filter>
     </ClInclude>
     <ClInclude Include="InstancingDemo.h">
-      <Filter>Game\Week3</Filter>
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshInstancingDemo.h">
+      <Filter>Game</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -57,7 +54,10 @@
       <Filter>Main\Camera</Filter>
     </ClCompile>
     <ClCompile Include="InstancingDemo.cpp">
-      <Filter>Game\Week3</Filter>
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshInstancingDemo.cpp">
+      <Filter>Game</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -122,6 +122,9 @@
       <Filter>Shader\Week3</Filter>
     </FxCompile>
     <FxCompile Include="..\Shaders\19. InstancingDemo.fx">
+      <Filter>Shader\Week3</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Shaders\20. MeshInstancingDemo.fx">
       <Filter>Shader\Week3</Filter>
     </FxCompile>
   </ItemGroup>
