@@ -11,6 +11,7 @@ void InstancingManager::Render(vector<shared_ptr<GameObject>>& gameObjects)
 	ClearData(); 
 
 	RenderMeshRenderer(gameObjects); // 매 프레임마다 모으는 작업
+	RenderModelRenderer(gameObjects); 
 }
 
 // map을 날리는게 아니라 InstancingBuffer에 있는 vector<InstancingData>	 _data; 이걸 날린다는 얘기다
@@ -66,6 +67,51 @@ void InstancingManager::RenderMeshRenderer(vector<shared_ptr<GameObject>>& gameO
 			vec[0]->GetMeshRenderer()->RenderInstancing(buffer); 
 		}
 	}
+}
+
+void InstancingManager::RenderModelRenderer(vector<shared_ptr<GameObject>>& gmaeObjects)
+{
+	map<InstanceID, vector<shared_ptr<GameObject>>> cache;
+
+	// 분류 단계
+	for (shared_ptr<GameObject>& gameObject : gmaeObjects) //  &를 써서 레퍼런스 카운터를 안가지고 와서 쓰면 문제가 되는 부분이 없을까? 다른 데서 레퍼런스 카운트를 줄일 때 날아갈 수 있다. 멀티 스레드에서는 위험하지만 싱글 스레드에서는 문제 없다.
+	{
+		if (gameObject->GetModelRenderer() == nullptr)
+			continue;
+
+		const InstanceID instanceId = gameObject->GetModelRenderer()->GetInstanceID();
+		cache[instanceId].push_back(gameObject); // 같은 애들끼리 분리수거를 해주는 것이다. 
+	}
+
+	for (auto& pair : cache)
+	{
+		const vector<shared_ptr<GameObject>>& vec = pair.second;
+
+		//if (vec.size() == 1)
+		//{
+		//    하나만 있을 때는 옛날 버전으로 하면 된다. 
+		//}
+		//else 무조건 인스턴싱을 적용하는 버전으로 만든다.
+		{
+			const InstanceID instanceId = pair.first;
+
+			for (int32 i = 0; i < vec.size(); i++)
+			{
+				const shared_ptr<GameObject>& gameObject = vec[i];
+
+				InstancingData data;
+				data.world = gameObject->GetTransform()->GetWorldMatrix();
+
+				AddData(instanceId, data); // InstanceId에 따라서 InstancingBuffer를 찾아준 다음에 버퍼에다가 데이터를 넣어주는 함수
+			}
+
+			// 막타
+			// 대표로 할 애를 정하면 된다. 
+			shared_ptr<InstancingBuffer>& buffer = _buffers[instanceId];
+			vec[0]->GetModelRenderer()->RenderInstancing(buffer);
+		}
+	}
+
 }
 
 void InstancingManager::AddData(InstanceID instanceId, InstancingData& data)

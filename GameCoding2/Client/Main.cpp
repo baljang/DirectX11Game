@@ -3,6 +3,7 @@
 #include "Engine/Game.h"
 #include "InstancingDemo.h"
 #include "MeshInstancingDemo.h"
+#include "ModelInstancingDemo.h"
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
@@ -14,7 +15,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	desc.width = 800; 
 	desc.height = 600; 
 	desc.clearColor = Color(0.f, 0.f, 0.f, 0.f);
-	desc.app = make_shared<MeshInstancingDemo>(); // 실행 단위
+	desc.app = make_shared<ModelInstancingDemo>(); // 실행 단위
 
 	GAME->Run(desc); 
 
