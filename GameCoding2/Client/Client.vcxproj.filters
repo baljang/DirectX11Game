@@ -45,6 +45,9 @@
     <ClInclude Include="ModelInstancingDemo.h">
       <Filter>Game</Filter>
     </ClInclude>
+    <ClInclude Include="AnimInstancingDemo.h">
+      <Filter>Game</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -63,6 +66,9 @@
       <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="ModelInstancingDemo.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimInstancingDemo.cpp">
       <Filter>Game</Filter>
     </ClCompile>
   </ItemGroup>
@@ -134,6 +140,9 @@
       <Filter>Shader\Week3</Filter>
     </FxCompile>
     <FxCompile Include="..\Shaders\21. ModelInstancingDemo.fx">
+      <Filter>Shader\Week3</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Shaders\22. AnimInstancingDemo.fx">
       <Filter>Shader\Week3</Filter>
     </FxCompile>
   </ItemGroup>
