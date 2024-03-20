@@ -27,6 +27,7 @@
     <ClInclude Include="ModelInstancingDemo.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="RenderDemo.h" />
+    <ClInclude Include="SceneDemo.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AnimInstancingDemo.cpp" />
@@ -42,6 +43,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="RenderDemo.cpp" />
+    <ClCompile Include="SceneDemo.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Shaders\00. Global.fx" />
