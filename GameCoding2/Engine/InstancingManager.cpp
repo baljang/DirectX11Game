@@ -159,7 +159,7 @@ void InstancingManager::RenderAnimRenderer(vector<shared_ptr<GameObject>>& gameO
 				tweenDesc->tweens[i] = gameObject->GetModelAnimator()->GetTweenDesc();
 			}
 
-			RENDER->PushTweenData(*tweenDesc.get()); 
+			vec[0]->GetModelAnimator()->GetShader()->PushTweenData(*tweenDesc.get());
 
 			// 막타
 			// 대표로 할 애를 정하면 된다. 

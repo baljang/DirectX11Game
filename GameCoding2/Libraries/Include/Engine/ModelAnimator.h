@@ -21,6 +21,7 @@ public:
 
 	void SetModel(shared_ptr<Model> model);
 	void SetPass(uint8 pass) { _pass = pass; }
+	shared_ptr<Shader> GetShader() { return _shader; }
 
 	virtual void Update() override; 
 
