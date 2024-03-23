@@ -51,6 +51,9 @@
     <ClInclude Include="TextureBufferDemo.h">
       <Filter>Game</Filter>
     </ClInclude>
+    <ClInclude Include="StructuredBufferDemo.h">
+      <Filter>Game</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -72,6 +75,9 @@
       <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="TextureBufferDemo.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="StructuredBufferDemo.cpp">
       <Filter>Game</Filter>
     </ClCompile>
   </ItemGroup>
@@ -161,6 +167,9 @@
       <Filter>Shaders\Week4</Filter>
     </FxCompile>
     <FxCompile Include="..\Shaders\26. TextureBufferDemo.fx">
+      <Filter>Shaders\Week4</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Shaders\27. StructuredBufferDemo.fx">
       <Filter>Shaders\Week4</Filter>
     </FxCompile>
   </ItemGroup>
