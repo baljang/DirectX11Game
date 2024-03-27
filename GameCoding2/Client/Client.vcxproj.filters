@@ -54,6 +54,9 @@
     <ClInclude Include="StructuredBufferDemo.h">
       <Filter>Game</Filter>
     </ClInclude>
+    <ClInclude Include="ViewportDemo.h">
+      <Filter>Game</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -78,6 +81,9 @@
       <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="StructuredBufferDemo.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewportDemo.cpp">
       <Filter>Game</Filter>
     </ClCompile>
   </ItemGroup>

@@ -5,6 +5,7 @@
 #include "GroupDemo.h"
 #include "TextureBufferDemo.h"
 #include "StructuredBufferDemo.h"
+#include "ViewportDemo.h"
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
@@ -15,8 +16,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	desc.hWnd = NULL; 
 	desc.width = 800; 
 	desc.height = 600; 
-	desc.clearColor = Color(0.f, 0.f, 0.f, 0.f);
-	desc.app = make_shared<TextureBufferDemo>(); // 실행 단위
+	desc.clearColor = Color(0.5f, 0.5f, 0.5f, 0.5f);
+	desc.app = make_shared<ViewportDemo>(); // 실행 단위
 
 	GAME->Run(desc); 
 
