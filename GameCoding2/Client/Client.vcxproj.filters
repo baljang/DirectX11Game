@@ -28,6 +28,9 @@
     <Filter Include="Shaders\Week4">
       <UniqueIdentifier>{7f565b04-5961-4a9c-863a-e5a3c4ab06ae}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Week3">
+      <UniqueIdentifier>{746d3f5c-a42a-4e3c-8320-2bc983a640d9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -57,6 +60,9 @@
     <ClInclude Include="ViewportDemo.h">
       <Filter>Game</Filter>
     </ClInclude>
+    <ClInclude Include="CollisionDemo.h">
+      <Filter>Game\Week3</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -85,6 +91,9 @@
     </ClCompile>
     <ClCompile Include="ViewportDemo.cpp">
       <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionDemo.cpp">
+      <Filter>Game\Week3</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

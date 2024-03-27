@@ -7,6 +7,7 @@
 #include "ModelRenderer.h"
 #include "ModelAnimator.h"
 #include "Light.h"
+#include "BaseCollider.h"
 
 GameObject::GameObject()
 {
@@ -128,6 +129,12 @@ shared_ptr<Light> GameObject::GetLight()
 {
 	shared_ptr<Component> component = GetFixedComponent(ComponentType::Light);
 	return static_pointer_cast<Light>(component);
+}
+
+shared_ptr<BaseCollider> GameObject::GetCollider()
+{
+	shared_ptr<Component> component = GetFixedComponent(ComponentType::Collider);
+	return static_pointer_cast<BaseCollider>(component);
 }
 
 shared_ptr<Transform> GameObject::GetOrAddTransform()

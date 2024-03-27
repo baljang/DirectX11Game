@@ -13,6 +13,8 @@ public:
 	shared_ptr<GameObject> GetCamera() { return _cameras.empty() ? nullptr : *_cameras.begin(); }
 	shared_ptr<GameObject> GetLight() { return _lights.empty() ? nullptr : *_lights.begin(); }
 
+	shared_ptr<class GameObject> Pick(int32 screenX, int32 screenY);
+
 private: 
 	unordered_set<shared_ptr<GameObject>> _objects; 
 	// Cache Camera
