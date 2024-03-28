@@ -10,3 +10,9 @@ private:
 	shared_ptr<Shader> _shader;
 };
 
+#include "MonoBehaviour.h"
+class MoveScript : public MonoBehaviour
+{
+public:
+	virtual void Update() override; 
+};

@@ -15,6 +15,7 @@ public:
 
 	shared_ptr<class GameObject> Pick(int32 screenX, int32 screenY);
 
+	void CheckCollision(); 
 private: 
 	unordered_set<shared_ptr<GameObject>> _objects; 
 	// Cache Camera

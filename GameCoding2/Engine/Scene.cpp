@@ -38,6 +38,8 @@ void Scene::LateUpdate()
 	{
 		object->LateUpdate();
 	}
+
+	CheckCollision(); 
 }
 
 void Scene::Add(shared_ptr<GameObject> object)
@@ -115,4 +117,30 @@ std::shared_ptr<class GameObject> Scene::Pick(int32 screenX, int32 screenY)
 	}
 
 	return picked; 
+}
+
+void Scene::CheckCollision()
+{
+	vector<shared_ptr<BaseCollider>> colliders; 
+
+	for (shared_ptr<GameObject> object : _objects)
+	{
+		if (object->GetCollider() == nullptr)
+			continue; 
+
+		colliders.push_back(object->GetCollider()); 
+	}
+
+	// BruteForce
+	for (int32 i = 0; i < colliders.size(); i++)
+	{
+		for (int32 j = i + 1; j < colliders.size(); j++)
+		{
+			shared_ptr<BaseCollider>& other = colliders[j]; 
+			if (colliders[i]->Intersects(other))
+			{
+				int a = 3; 
+			}
+		}
+	}
 }
