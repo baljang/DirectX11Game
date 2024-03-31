@@ -30,5 +30,25 @@ struct MathUtils
 	// Ray2Point
 	static bool PointOnRay(const Point3D& point, const Ray3D& ray);
 	static Point3D ClosestPoint(const Ray3D& ray, const Point3D& point);
+
+	//-------------------
+	// Intersection
+	//-------------------
+
+	static bool SphereSphere(const Sphere3D& s1, const Sphere3D& s2);
+	static bool SphereAABB(const Sphere3D& sphere, const AABB3D& aabb);
+	static bool SphereOBB(const Sphere3D& sphere, const OBB3D& obb);
+	static bool SpherePlane(const Sphere3D& sphere, const Plane3D& plane);
+	static bool AABBAABB(const AABB3D& aabb1, const AABB3D& aabb2);
+
+	static Interval3D GetInterval(const AABB3D& aabb, const Vec3& axis);
+	static Interval3D GetInterval(const OBB3D& obb, const Vec3& axis);
+	static bool OverlapOnAxis(const AABB3D& aabb, const OBB3D& obb, const Vec3& axis);
+	static bool AABBOBB(const AABB3D& aabb, const OBB3D& obb);
+
+	static bool OverlapOnAxis(const OBB3D& obb1, const OBB3D& obb2, const Vec3& axis);
+	static bool AABBPlane(const AABB3D& aabb, const Plane3D& plane);
+	static bool OBBOBB(const OBB3D& obb1, const OBB3D& obb2);
+	static bool PlanePlane(const Plane3D& plane1, const Plane3D& plane2);
 };
 
