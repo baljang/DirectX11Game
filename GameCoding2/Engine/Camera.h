@@ -16,6 +16,9 @@ public:
 	
 	virtual void Update() override;
 
+	void SetProjectionType(ProjectionType type) { _type = type; }
+	ProjectionType GetProjectionType() { return _type; } 
+
 	void UpdateMatrix();
 
 	void SetNear(float value) { _near = value; }
@@ -27,7 +30,11 @@ public:
 	Matrix& GetViewMatrix() { return _matView; }
 	Matrix& GetProjectionMatrix() { return _matProjection; }
 
+	float GetWidth() { return _width; }
+	float GetHeight() { return _height; } 
+
 private:
+	ProjectionType _type = ProjectionType::Perspective; 
 	Matrix _matView = Matrix::Identity;
 	Matrix _matProjection = Matrix::Identity;
 
@@ -40,4 +47,24 @@ private:
 public:
 	static Matrix S_MatView;
 	static Matrix S_MatProjection;
+
+public:
+	void SortGameObject();	// 관련있는 물체들을 sorting해서 갖고 올 것이고, 
+	void Render_Forward();  // 나중에 Render_Deferred도 나오는지 forward가 기본방식이라
+
+	void SetCullingMaskLayerOnOff(uint8 layer, bool on) // 특정 레이어만 on, off 하겠다. 
+	{
+		if (on)
+			_cullingMask |= (1 << layer);
+		else
+			_cullingMask &= ~(1 << layer);
+	}
+
+	void SetCullingMaskAll() { SetCullingMask(UINT32_MAX); } // 아무것도 그리지 않겠다. 싹 다 1로 
+	void SetCullingMask(uint32 mask) { _cullingMask = mask; }
+	bool IsCulled(uint8 layer) { return (_cullingMask & (1 << layer)) != 0; }
+
+private: 
+	uint32 _cullingMask = 0; 
+	vector<shared_ptr<GameObject>> _vecForward; // 그려줄 물체들을 모아서 관리
 };

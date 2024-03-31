@@ -42,26 +42,8 @@
     <ClInclude Include="CameraScript.h">
       <Filter>Main\Camera</Filter>
     </ClInclude>
-    <ClInclude Include="SceneDemo.h">
+    <ClInclude Include="OrthographicDemo.h">
       <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="RawBufferDemo.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="GroupDemo.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="TextureBufferDemo.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="StructuredBufferDemo.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="ViewportDemo.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="CollisionDemo.h">
-      <Filter>Game\Week3</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -74,26 +56,8 @@
     <ClCompile Include="CameraScript.cpp">
       <Filter>Main\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="SceneDemo.cpp">
+    <ClCompile Include="OrthographicDemo.cpp">
       <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="RawBufferDemo.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="GroupDemo.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="TextureBufferDemo.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="StructuredBufferDemo.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="ViewportDemo.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="CollisionDemo.cpp">
-      <Filter>Game\Week3</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
