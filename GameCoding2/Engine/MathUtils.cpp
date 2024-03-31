@@ -368,3 +368,200 @@ bool MathUtils::PlanePlane(const Plane3D& plane1, const Plane3D& plane2)
 	Vec3 d = plane1.normal.Cross(plane2.normal);
 	return d.Dot(d) != 0; // Consider using an epsilon!
 }
+
+
+
+bool MathUtils::Raycast(const Sphere3D& sphere, const Ray3D& ray, OUT float& distance)
+{
+	Vec3 e = sphere.position - ray.origin;
+
+	float rSq = sphere.radius * sphere.radius;
+	float eSq = e.LengthSquared();
+
+	float a = e.Dot(ray.direction);
+
+	float bSq = eSq - (a * a);
+	float f = sqrt(rSq - bSq);
+
+	// No collision has happened
+	if (rSq - (eSq - (a * a)) < 0.0f)
+		return false;
+
+	// Ray starts inside the sphere
+	if (eSq < rSq)
+	{
+		distance = a + f;
+		return true;
+	}
+
+	// else Normal intersection
+	distance = a - f;
+	return true;
+}
+
+
+// Cyrus-Beck clipping
+// AABB를 구성하는 6개의 평면에 대해 클리핑 진행
+// Point3D point = ray.origin + ray.direction * t;
+bool MathUtils::Raycast(const AABB3D& aabb, const Ray3D& ray, OUT float& distance)
+{
+	Vec3 min = AABB3D::GetMin(aabb);
+	Vec3 max = AABB3D::GetMax(aabb);
+
+	// TODO : 0 나누기 방지 위해 +@ 더해줌
+	float t1 = (min.x - ray.origin.x) / ray.direction.x;
+	float t2 = (max.x - ray.origin.x) / ray.direction.x;
+
+	float t3 = (min.y - ray.origin.y) / ray.direction.y;
+	float t4 = (max.y - ray.origin.y) / ray.direction.y;
+
+	float t5 = (min.z - ray.origin.z) / ray.direction.z;
+	float t6 = (max.z - ray.origin.z) / ray.direction.z;
+
+	// Largest min value
+	float tmin = fmaxf(
+		fmaxf(
+			fminf(t1, t2),
+			fminf(t3, t4)
+		),
+		fminf(t5, t6)
+	);
+
+	// Smallest max value
+	float tmax = fminf(
+		fminf(
+			fmaxf(t1, t2),
+			fmaxf(t3, t4)
+		),
+		fmaxf(t5, t6)
+	);
+
+	if (tmax < 0)
+		return false;
+
+	if (tmin > tmax)
+		return false;
+
+	if (tmin < 0.0f)
+	{
+		distance = tmax;
+		return true;
+	}
+
+	distance = tmin;
+	return true;
+}
+
+
+bool MathUtils::Raycast(const Plane3D& plane, const Ray3D& ray, OUT float& distance)
+{
+	float nd = ray.direction.Dot(plane.normal);
+	float pn = ray.origin.Dot(plane.normal);
+
+	if (nd >= 0.0f)
+		return false;
+
+	float t = (plane.distance - pn) / nd;
+
+	if (t >= 0.0f)
+	{
+		distance = t;
+		return true;
+	}
+
+	return false;
+}
+
+
+//-------------------
+// Triangle
+//-------------------
+
+bool MathUtils::PointInTriangle(const Point3D& p, const Triangle3D& t)
+{
+	Vec3 a = t.a - p;
+	Vec3 b = t.b - p;
+	Vec3 c = t.c - p;
+
+	Vec3 normPBC = b.Cross(c); // Normal of PBC (u)
+	Vec3 normPCA = c.Cross(a); // Normal of PCA (v)
+	Vec3 normPAB = a.Cross(b); // Normal of PAB (w)
+
+	if (normPBC.Dot(normPCA) < 0.0f)
+		return false;
+
+	else if (normPBC.Dot(normPAB) < 0.0f)
+		return false;
+
+	return true;
+}
+
+
+Vec3 MathUtils::Barycentric(const Point3D& p, const Triangle3D& t)
+{
+	Vec3 ap = p - t.a;
+	Vec3 bp = p - t.b;
+	Vec3 cp = p - t.c;
+
+	Vec3 ab = t.b - t.a;
+	Vec3 ac = t.c - t.a;
+	Vec3 bc = t.c - t.b;
+	Vec3 cb = t.b - t.c;
+	Vec3 ca = t.a - t.c;
+
+	Vec3 v = ab - ProjectVecOnVec(ab, cb);
+	float a = 1.0f - (v.Dot(ap) / v.Dot(ab));
+
+	v = bc - ProjectVecOnVec(bc, ac);
+	float b = 1.0f - (v.Dot(bp) / v.Dot(bc));
+
+	v = ca - ProjectVecOnVec(ca, ab);
+	float c = 1.0f - (v.Dot(cp) / v.Dot(ca));
+
+	return Vec3(a, b, c);
+}
+
+Plane3D MathUtils::FromTriangle(const Triangle3D& t)
+{
+	Plane3D result;
+
+	result.normal = (t.b - t.a).Cross(t.c - t.a);
+	result.normal.Normalize();
+
+	result.distance = result.normal.Dot(t.a);
+
+	return result;
+}
+
+bool MathUtils::Raycast(const Triangle3D& triangle, const Ray3D& ray, float& distance)
+{
+	Plane3D plane = FromTriangle(triangle);
+
+	float t = 0;
+	if (Raycast(plane, ray, OUT t) == false)
+		return false;
+
+	Point3D result = ray.origin + ray.direction * t;
+
+	Vec3 barycentric = Barycentric(result, triangle);
+
+	if (barycentric.x >= 0.0f && barycentric.x <= 1.0f &&
+		barycentric.y >= 0.0f && barycentric.y <= 1.0f &&
+		barycentric.z >= 0.0f && barycentric.z <= 1.0f)
+	{
+		distance = t;
+		return true;
+	}
+
+	return false;
+}
+
+
+Vec3 MathUtils::ProjectVecOnVec(Vec3 a, Vec3 b)
+{
+	b.Normalize();
+
+	float dist = a.Dot(b);
+
+	return b * dist;
+}
