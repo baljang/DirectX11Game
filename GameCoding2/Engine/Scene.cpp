@@ -4,6 +4,7 @@
 #include "BaseCollider.h"
 #include "Camera.h"
 #include "Terrain.h"
+#include "Button.h"
 
 void Scene::Start()
 {
@@ -24,6 +25,8 @@ void Scene::Update()
 	{
 		object->Update();
 	}
+
+	PickUI(); 
 }
 
 void Scene::LateUpdate()
@@ -93,6 +96,30 @@ shared_ptr<GameObject> Scene::GetUICamera()
 	return nullptr;
 }
 
+void Scene::PickUI()
+{
+	if (INPUT->GetButtonDown(KEY_TYPE::LBUTTON) == false)
+		return; 
+
+	if (GetUICamera() == nullptr)
+		return;
+
+	POINT screenPt = INPUT->GetMousePos(); 
+
+	shared_ptr<Camera> camera = GetUICamera()->GetCamera(); 
+
+	const auto gameObjects = GetObjects(); // &를 auto 뒤에 넣느냐 마느냐는 버튼을 눌렀을 때 물체가 제거가 되면 난리가 나니 복사를 해야 한다. 확실하게 제거를 안하겠다면 참조로 &을 넣어도 된다. . 
+
+	for (auto& gameObject : gameObjects) 
+	{
+		if (gameObject->GetButton() == nullptr)
+			continue; 
+
+		if (gameObject->GetButton()->Picked(screenPt))
+			gameObject->GetButton()->InvokeOnClicked(); 
+	}
+}
+
 std::shared_ptr<class GameObject> Scene::Pick(int32 screenX, int32 screenY)
 {
 	shared_ptr<Camera> camera = GetMainCamera()->GetCamera(); // Get카메라 오브젝트->Get카메라 컴포넌트
@@ -115,6 +142,9 @@ std::shared_ptr<class GameObject> Scene::Pick(int32 screenX, int32 screenY)
 
 	for (auto& gameObject : gameObjects)
 	{
+		if(camera->IsCulled(gameObject->GetLayerIndex()))
+			continue; 
+
 		if (gameObject->GetCollider() == nullptr)
 			continue; 
 
