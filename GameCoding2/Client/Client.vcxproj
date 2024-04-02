@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BillboardDemo.h" />
     <ClInclude Include="ButtonDemo.h" />
     <ClInclude Include="CameraScript.h" />
     <ClInclude Include="Main.h" />
@@ -26,6 +27,7 @@
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BillboardDemo.cpp" />
     <ClCompile Include="ButtonDemo.cpp" />
     <ClCompile Include="CameraScript.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -85,6 +87,7 @@
     <FxCompile Include="..\Shaders\25. GroupDemo.fx" />
     <FxCompile Include="..\Shaders\26. TextureBufferDemo.fx" />
     <FxCompile Include="..\Shaders\27. StructuredBufferDemo.fx" />
+    <FxCompile Include="..\Shaders\28. BillboardDemo.fx" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
