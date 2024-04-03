@@ -92,4 +92,17 @@ struct InstancedTweenDesc
 	TweenDesc tweens[MAX_MODEL_INSTANCE]; 
 };
 
+// 눈을 뿌리고 싶을 때 어떻게 뿌리고 싶을지와 관련된 정보
+struct SnowBillboardDesc
+{
+	Color color = Color(1, 1, 1, 1);
 
+	Vec3 velocity = Vec3(0, -5, 0); // 속도
+	float drawDistance = 0;
+
+	Vec3 origin = Vec3(0, 0, 0);
+	float turbulence = 5; // 흔들리는 강도
+
+	Vec3 extent = Vec3(0, 0, 0);
+	float time;
+};
